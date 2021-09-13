@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT:wght@400;700&display=swap');
+
+:root {
+    --size: 1rem;
+    --tile-percent: 5.5vw;
+    --black: gray;
+    --white: white;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Old Standard TT', serif;
+    background-color: whitesmoke;
+    position: relative;
+    user-select: none;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    height: 100vh;
+}
+
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    font-size: 1.2rem;
+}
+
+.bench {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4.5rem;
+}
+
+
+
+.piece {
+    cursor: pointer;
+}
+
+.container {
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, var(--tile-percent));
+    grid-template-rows: repeat(8, var(--tile-percent));
+    border: 1rem solid #AAA;
+    justify-content: center;
+}
+.tile {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-size: 4.5rem;
+   cursor: pointer;
+}
+
+.tile:hover {
+    background-color: burlywood;
+}
+
+.black {
+    background-color: var(--black);
+}
+
+.white {
+    background-color: var(--white);
+}
+
+.border {
+    background-color: rgba(111, 111, 111, .5);
+    cursor: pointer;
+}
+
+
+.move {
+    background-color: rgba(0, 111, 0, .5) !important;
+}
+
+@media (max-width: 800px) {
+    #chessboard {
+        grid-template-columns: repeat(8, 10vw);
+        grid-template-rows: repeat(8, 10vw);
+    }
+}
+
