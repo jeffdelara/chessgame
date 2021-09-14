@@ -11,6 +11,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-size: 1vw;
 }
 body {
     font-family: 'Old Standard TT', serif;
@@ -45,6 +46,7 @@ header {
 
 .piece {
     cursor: pointer;
+
 }
 
 .container {
