@@ -96,7 +96,7 @@ class Player
                 return { message: "attack" };
             }
 
-            if(board.isPawnAtEnd(this.on_hand, to))
+            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
             {
                 console.log("Pawn is at end. Promote the pawn.");
                 board.move(this.on_hand, to);
