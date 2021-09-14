@@ -8,29 +8,6 @@ class Rook extends Piece
         this.move_set = [];
         this.max_step = 8;
     }
-    
-    isBlockedForward(game_pieces, coor)
-    {
-        for(let i = 0; i < game_pieces.length; i++)
-        {
-            const piece = game_pieces[i];
-
-            if(this.isCurrentLocation(coor.row, coor.col)) return false;
-            if(piece.row === coor.row && piece.col === coor.col)
-            {
-                if(this.isEnemy(piece))
-                {
-                    return {isBlocked : true, type: 'enemy'}
-                }
-                else
-                {
-                    return { isBlocked: true, type: 'ally' };
-                }   
-            }
-        }
-
-        return false;
-    }
 
     createMoveSetWithDirection(direction, game_pieces)
     {

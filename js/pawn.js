@@ -12,8 +12,6 @@ class Pawn extends Piece
         this.end_row = this.team === 'BLACK' ? 7 : 0;
     }
 
-    
-
     isBlockedForward(game_pieces, steps = 1)
     {
         const potential_row = this.row + (steps * this.direction);
