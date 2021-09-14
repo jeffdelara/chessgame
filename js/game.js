@@ -71,7 +71,7 @@ class Game
         let white = this.players[0];
         let black = this.players[1];
         
-        white.pieces.push(new Pawn(6, 0, 'white'));
+        white.pieces.push(new Queen(6, 0, 'white'));
         white.pieces.push(new Rook(7, 0, 'white'));
         white.pieces.push(new Rook(7, 7, 'white'));
         white.pieces.push(new Pawn(5, 4, 'white'));
@@ -183,7 +183,8 @@ class Game
 
     showMoveset()
     {
-        const move_set = this.current_player.on_hand.getMoveSet();
+        const on_hand = this.current_player.on_hand;
+        const move_set = on_hand.getMoveSet();
         for(let i = 0; i < move_set.length; i++)
         {
             const move = move_set[i];
@@ -191,6 +192,7 @@ class Game
             const id = `#r${move[0]}c${move[1]}`;
             document.querySelector(id).classList.add('move');
         }
+        document.querySelector(`#r${on_hand.row}c${on_hand.col}`).classList.add('move');
     }
 
     promotePawn(row, col)
