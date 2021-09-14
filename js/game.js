@@ -63,24 +63,80 @@ class Game
         }
     }
 
-    createPiecesForPlayers()
+    createRooks()
     {
-        // this.createPawns();
-
-        // This part for testing purposes
         let white = this.players[0];
         let black = this.players[1];
-        
-        white.pieces.push(new Queen(7, 1, 'white'));
+
         white.pieces.push(new Rook(7, 0, 'white'));
         white.pieces.push(new Rook(7, 7, 'white'));
-        white.pieces.push(new King(5, 4, 'white'));
-        white.pieces.push(new Bishop(3, 3, 'white'));
         black.pieces.push(new Rook(0, 0, 'black'));
         black.pieces.push(new Rook(0, 7, 'black'));
-        black.pieces.push(new Pawn(1, 3, 'black'));
-        black.pieces.push(new King(1, 4, 'black'));
-        black.pieces.push(new Bishop(2, 2, 'black'));
+    }
+
+    createKnights()
+    {
+        let white = this.players[0];
+        let black = this.players[1];
+
+        white.pieces.push(new Knight(7, 1, 'white'));
+        white.pieces.push(new Knight(7, 6, 'white'));
+        black.pieces.push(new Knight(0, 1, 'black'));
+        black.pieces.push(new Knight(0, 6, 'black'));
+    }
+
+    createBishops()
+    {
+        let white = this.players[0];
+        let black = this.players[1];
+
+        white.pieces.push(new Bishop(7, 2, 'white'));
+        white.pieces.push(new Bishop(7, 5, 'white'));
+        black.pieces.push(new Bishop(0, 2, 'black'));
+        black.pieces.push(new Bishop(0, 5, 'black'));
+    }
+
+    createQueens()
+    {
+        let white = this.players[0];
+        let black = this.players[1];
+
+        white.pieces.push(new Queen(7, 3, 'white'));
+        black.pieces.push(new Queen(0, 3, 'black'));
+    }
+
+    createKings()
+    {
+        let white = this.players[0];
+        let black = this.players[1];
+
+        white.pieces.push(new King(7, 4, 'white'));
+        black.pieces.push(new King(0, 4, 'black'));
+    }
+
+    createPiecesForPlayers()
+    {
+        this.createPawns();
+        this.createRooks();
+        this.createKnights();
+        this.createBishops();
+        this.createQueens();
+        this.createKings();
+
+        // This part for testing purposes
+        // let white = this.players[0];
+        // let black = this.players[1];
+        
+        // white.pieces.push(new Queen(7, 1, 'white'));
+        // white.pieces.push(new Rook(7, 0, 'white'));
+        // white.pieces.push(new Knight(3,3, 'white'));
+        // white.pieces.push(new King(5, 4, 'white'));
+        // white.pieces.push(new Bishop(3, 3, 'white'));
+        // black.pieces.push(new Rook(0, 0, 'black'));
+        // black.pieces.push(new Knight(0, 7, 'black'));
+        // black.pieces.push(new Pawn(1, 3, 'black'));
+        // black.pieces.push(new King(1, 4, 'black'));
+        // black.pieces.push(new Bishop(2, 2, 'black'));
     }
 
     getAllGamePiecesOnBoard()
