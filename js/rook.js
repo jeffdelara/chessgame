@@ -63,6 +63,5 @@ class Rook extends Piece
         this.createMoveSetWithDirection('down', game_pieces);
         this.createMoveSetWithDirection('left', game_pieces);
         this.createMoveSetWithDirection('right', game_pieces);
-        
     }
 }
