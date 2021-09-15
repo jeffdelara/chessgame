@@ -71,15 +71,15 @@ class Game
         let white = this.players[0];
         let black = this.players[1];
         
-        white.pieces.push(new Queen(6, 0, 'white'));
+        white.pieces.push(new Queen(7, 1, 'white'));
         white.pieces.push(new Rook(7, 0, 'white'));
         white.pieces.push(new Rook(7, 7, 'white'));
-        white.pieces.push(new Pawn(5, 4, 'white'));
+        white.pieces.push(new King(5, 4, 'white'));
         white.pieces.push(new Bishop(3, 3, 'white'));
         black.pieces.push(new Rook(0, 0, 'black'));
         black.pieces.push(new Rook(0, 7, 'black'));
         black.pieces.push(new Pawn(1, 3, 'black'));
-        black.pieces.push(new Pawn(1, 4, 'black'));
+        black.pieces.push(new King(1, 4, 'black'));
         black.pieces.push(new Bishop(2, 2, 'black'));
     }
 
