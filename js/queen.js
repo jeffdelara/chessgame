@@ -61,12 +61,20 @@ class Queen extends Piece
             }
 
             if(this.isOutOfBounds(potential_row, potential_col)) break;
+            if(this.isMoveSetExist(potential_row, potential_col)) break;
+            if(this.isCurrentLocation(potential_row, potential_col)) continue;
             const isBlocked = this.isBlockedForward(game_pieces, {row: potential_row, col: potential_col});
 
             if(isBlocked && isBlocked.isBlocked)
             {
                 if(isBlocked.type === 'enemy')
                 {
+                    if(isBlocked.piece.name === "KING")
+                    {
+                        this.move_set.push([potential_row, potential_col]);
+                        continue;
+                    }
+                    
                     this.move_set.push([potential_row, potential_col]);
                     break;
                 }

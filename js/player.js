@@ -6,7 +6,20 @@ class Player
         this.pieces = [];
         this.on_hand = null;
         this.captures = [];
+        this.isChecked = false;
     }
+
+    check()
+    {
+        this.isChecked = true;
+    }
+
+    removeCheck()
+    {
+        this.isChecked = false;
+    }
+
+    
 
     searchPiece(piece)
     {
@@ -72,6 +85,43 @@ class Player
         this.dropHand();
     }
 
+    getKing()
+    {
+        for(let i = 0; i < this.pieces.length; i++)
+        {
+            let piece = this.pieces[i];
+            if(piece.name === 'KING') return piece;
+        }
+
+        console.log("There is no king for ", this.team, "YOU WIN!");
+        return false;
+    }
+
+    isCheckedBy(player)
+    {
+        let king = this.getKing();
+        if(!king) return false;
+
+        const player_pieces = player.pieces;
+    
+        for(let i = 0; i < player_pieces.length; i++)
+        {
+            const player_piece = player_pieces[i];
+            for(let j = 0; j < player_piece.move_set.length; j++)
+            {
+                const move = player_piece.move_set[j];
+                if(king.row === move[0] && king.col === move[1]) 
+                {
+                    this.check();
+                    return true;
+                }
+            }
+        }
+
+        this.removeCheck();
+        return false;
+    }
+
     // piece object 
     // board object
     // to object ({row: "", col: ""})
@@ -103,6 +153,12 @@ class Player
                 this.dropHand();
                 return {message: "promote"};
             }
+
+            // if(this.on_hand.name === "KING" && this.on_hand.isDangerTile(to.row, to.col))
+            // {
+            //     console.log("Danger tile", );
+            //     return { message: "cancel" };
+            // }
 
             board.move(this.on_hand, to);
             this.dropHand();

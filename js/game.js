@@ -15,9 +15,11 @@ class Game
         this.current_state = this.STATE.PLAYER_TURN;
         this.current_player = null;
         this.board = new Board();
-
+        this.checkedTile = null;
         this.clicked_row = null;
         this.click_col = null;
+
+        this.message = "";
     }
 
     startTurn()
@@ -43,6 +45,11 @@ class Game
     incrementTurn()
     {
         this.turn++;
+    }
+
+    decrementTurn()
+    {
+        this.turn--;
     }
 
     createPlayers()
@@ -124,8 +131,8 @@ class Game
         this.createKings();
 
         // This part for testing purposes
-        // let white = this.players[0];
-        // let black = this.players[1];
+        let white = this.players[0];
+        let black = this.players[1];
         
         // white.pieces.push(new Queen(7, 1, 'white'));
         // white.pieces.push(new Rook(7, 0, 'white'));
@@ -135,7 +142,7 @@ class Game
         // black.pieces.push(new Rook(0, 0, 'black'));
         // black.pieces.push(new Knight(0, 7, 'black'));
         // black.pieces.push(new Pawn(1, 3, 'black'));
-        // black.pieces.push(new King(1, 4, 'black'));
+        // // black.pieces.push(new King(1, 4, 'black'));
         // black.pieces.push(new Bishop(2, 2, 'black'));
     }
 
@@ -149,8 +156,46 @@ class Game
         return this.current_player && this.current_player.on_hand !== null;
     }
 
+    highlightCheckedTile()
+    {
+        const [row, col] = this.getCheckedTile();
+        document.querySelector(`#r${row}c${col}`).classList.add('check');
+    }
+
+    createDangerTiles()
+    {
+        // Tiles that are not allowed for a king to enter
+        // might get checked.
+        for (let i = 0; i < this.players.length; i++) {
+            let player = this.players[i];
+            
+            for(let j = 0; j < player.pieces.length; j++)
+            {
+                
+                const piece = player.pieces[j];
+                
+                if(piece.name === "KING") piece.createDangerTiles(this.getAllGamePiecesOnBoard());
+                
+            }
+        }
+
+        // Once danger tiles are created, compare to moveset
+        // and delete if any match.
+        for(let i = 0; i < this.players.length; i++)
+        {
+            let player = this.players[i];
+            for(let j = 0; j < player.pieces.length; j++)
+            {
+                const piece = player.pieces[j];
+                
+                if(piece.name === 'KING') piece.deleteDangerTiles();
+            }
+        }
+    }
+
     updateBoard()
     {
+
         this.board.refreshBoard();
         for (let i = 0; i < this.players.length; i++) {
             const player = this.players[i];
@@ -162,6 +207,8 @@ class Game
                 this.board.insert(piece);
             }
         }
+
+        this.createDangerTiles();
         
     }
 
@@ -172,6 +219,8 @@ class Game
         container.appendChild(this.board.renderHTML());
 
         if(this.isCurrentPlayerAndHasPieceOnHand()) this.showMoveset();
+        if(this.isKingChecked()) this.highlightCheckedTile();
+
     }
 
     setUpClickEvent()
@@ -187,12 +236,15 @@ class Game
         this.createPlayers();
         this.createPiecesForPlayers();
 
+        
         this.updateBoard();
         this.renderBoard();
 
         this.setUpClickEvent();
         this.current_player = this.startTurn();
         console.log("Player turn: ", this.current_player.team);
+        this.message = this.current_player.team;
+        this.displayHUD();
     }
 
     getEnemy()
@@ -201,8 +253,67 @@ class Game
             const player = this.players[i];
             if(player.team !== this.current_player.team) return player;
         }
-
         return false;
+    }
+
+    unsetCheckedTile()
+    {
+        this.checkedTile = null;
+    }
+
+    setCheckedTile(row, col)
+    {
+        this.checkedTile = [row, col];
+    }
+
+    getCheckedTile()
+    {
+        return this.checkedTile;
+    }
+
+    isKingChecked()
+    {
+        return this.checkedTile !== null;
+    }
+
+    checkIfChecked()
+    {
+        const enemy = this.players[(this.turn+1) % 2];
+        const previous_player = this.players[(this.turn) % 2];
+
+        const enemy_check = enemy.isCheckedBy(previous_player);
+        const player_check = previous_player.isCheckedBy(enemy);
+        
+        if(enemy_check)
+        {
+            const enemy_king = enemy.getKing();
+            // console.log("CHECK!", enemy_king.row, enemy_king.col);
+            if(enemy_king.hasNoMoves()) 
+            {
+                console.log("Possible CHECK MATE");
+                // TODO: Analyze if 'check' can be blocked
+            }
+            this.setCheckedTile(enemy_king.row, enemy_king.col);
+        }
+
+        if(player_check)
+        {
+            const previous_player_king = previous_player.getKing();
+            // console.log("CHECK! My own move made me checked.");
+
+            if(previous_player_king.hasNoMoves()) 
+            {
+                console.log("Possible CHECK MATE");
+                // TODO: Analyze if 'check' can be blocked
+            }
+            this.setCheckedTile(previous_player_king.row, previous_player_king.col);
+        }
+
+        if(!enemy_check && !player_check)
+        {
+            this.unsetCheckedTile();
+        }
+
     }
 
     captureEnemyPiece(row, col)
@@ -246,9 +357,10 @@ class Game
             const move = move_set[i];
             
             const id = `#r${move[0]}c${move[1]}`;
-            document.querySelector(id).classList.add('move');
+            const div = document.querySelector(id);
+            div.classList.contains('black') ? div.classList.add('move-black') : div.classList.add('move');
         }
-        document.querySelector(`#r${on_hand.row}c${on_hand.col}`).classList.add('move');
+        document.querySelector(`#r${on_hand.row}c${on_hand.col}`).classList.add('origin');
     }
 
     promotePawn(row, col)
@@ -256,6 +368,13 @@ class Game
         console.log("Code for promoting pawn");
         // show choices for promotion
         // change state to this.STATE.PLAYER_PROMOTION
+    }
+
+    displayHUD()
+    {
+        const message = document.querySelector("#message");
+        message.classList.add('hud');
+        message.innerHTML = this.message;
     }
 
     displayCaptures()
@@ -295,7 +414,7 @@ class Game
         const player = this.current_player;
 
         const result = player.move({row, col}, this.board);
-        
+
         switch (result.message) {
             case 'success':
                 this.endTurn();
@@ -350,10 +469,12 @@ class Game
 
         // update and render
         console.log("Player turn:", this.current_player.team);
+        this.message = this.current_player.team;
+        this.displayHUD();
         this.updateBoard();
+        this.checkIfChecked();
         this.displayCaptures();
         this.renderBoard();
-        
     }
 }
 

@@ -7,6 +7,7 @@ class Piece
         this.team = team.toUpperCase();
         this.move_set = [];
         this.end_row = false;
+        this.name = this.team;
     }
 
     clearMoveSet()
@@ -29,6 +30,17 @@ class Piece
         return this.row === row && this.col === col;
     }
 
+    isMoveSetExist(row, col)
+    {
+        for(let move in this.move_set)
+        {
+            const [move_row, move_col] = move; 
+            if(move_row === row && move_col === col) return true;
+        }
+
+        return false;
+    }
+
     isEnemy(piece)
     {
         return piece.team !== this.team;
@@ -45,7 +57,7 @@ class Piece
             {
                 if(this.isEnemy(piece))
                 {
-                    return {isBlocked : true, type: 'enemy'}
+                    return {isBlocked : true, type: 'enemy', piece: piece}
                 }
                 else
                 {
