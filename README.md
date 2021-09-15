@@ -5,10 +5,13 @@ Chess game with rules.
 Current features:
 - Movement and attack
 - Pawn movement and attack
+- Rook
 
 Todo:
-- Rook 
 - Bishop
 - Knight
-- Queen King
+- Queen 
+- King
 - Pawn promotion
+- Timer
+- Rook King Castling
