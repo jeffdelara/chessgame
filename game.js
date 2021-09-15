@@ -65,13 +65,15 @@ class Game
 
     createPiecesForPlayers()
     {
-        this.createPawns();
+        // this.createPawns();
+
+        // This part for testing purposes
         let white = this.players[0];
         let black = this.players[1];
         
-        // white.pieces.push(new Pawn(5, 3, 'white'));
-        white.pieces.push(new Rook(0, 0, 'white'));
-        black.pieces.push(new Rook(7, 0, 'black'));
+        white.pieces.push(new Pawn(6, 0, 'white'));
+        white.pieces.push(new Rook(7, 0, 'white'));
+        black.pieces.push(new Rook(3, 3, 'black'));
         // white.pieces.push(new Pawn(5, 4, 'white'));
         // black.pieces.push(new Pawn(1, 3, 'black'));
         // black.pieces.push(new Pawn(1, 4, 'black'));
