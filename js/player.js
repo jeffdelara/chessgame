@@ -82,6 +82,10 @@ class Player
             }
             if(this.isOutOfBounds(coor[0], coor[1])) break;
             moves.push(coor);
+            if(coor[0] === this.checked_by.row && coor[1] === this.checked_by.col) 
+            {
+                return { direction: direction.toUpperCase(), moves: moves }
+            }
         }
 
         return {direction: direction.toUpperCase(), moves: moves}
@@ -108,6 +112,7 @@ class Player
     canBlockChecker()
     {
         const checker = this.searchCheckOrigin();
+        console.log(checker);
         if(checker)
         {
             for(let check_move of checker.moves) 
@@ -252,6 +257,9 @@ class Player
         if(this.doPlayerOwnPiece(this.on_hand) && 
            this.isMoveInMoveSet(to.row, to.col, this.on_hand))
         {
+            const my_piece = this.searchPieceByCoordinates(to.row, to.col);
+            if(my_piece) return {message: "fail"};
+
             if(board.isAnAttack(this.on_hand, to))
             {
                 console.log("This is an attack!!!");

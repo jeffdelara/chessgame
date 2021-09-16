@@ -59,6 +59,7 @@ class Bishop extends Piece
                 }
                 if(isBlocked.type === 'ally')
                 {
+                    this.move_set.push([potential_row, potential_col]);
                     break;
                 }
             }

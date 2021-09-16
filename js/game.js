@@ -128,7 +128,7 @@ class Game
         // this.createKnights();
         // this.createBishops();
         // this.createQueens();
-        this.createKings();
+        // this.createKings();
 
         // This part for testing purposes
         let white = this.players[0];
@@ -137,13 +137,14 @@ class Game
         black.pieces.push(new Rook(2, 7, 'black'));
         black.pieces.push(new Bishop(2, 3, 'black'));
         white.pieces.push(new Pawn(6, 4, 'white'));
-        // white.pieces.push(new King(3, 3, 'white'));
+        white.pieces.push(new King(4, 0, 'white'));
         white.pieces.push(new Pawn(6, 5, 'white'));
         white.pieces.push(new Pawn(6, 6, 'white'));
         white.pieces.push(new Pawn(6, 3, 'white'));
         white.pieces.push(new Knight(6, 2, 'white'));
-        // black.pieces.push(new King(0, 3, 'black'));
-        black.pieces.push(new Queen(0, 1, 'black'));
+        black.pieces.push(new King(0, 3, 'black'));
+        black.pieces.push(new Rook(1, 1, 'black'));
+        black.pieces.push(new Queen(2, 1, 'black'));
     }
 
     getAllGamePiecesOnBoard()
@@ -229,6 +230,17 @@ class Game
         container.addEventListener('click', function(event){
             this.clickEventHandler(event);
         }.bind(this), false);
+    }
+
+    setHUDMessage(message)
+    {
+        this.message = message;
+        this.displayHUD();
+    }
+
+    endGame(winner)
+    {
+        this.setHUDMessage(`<span style="color:rgb(222,49,99);">CHECKMATE!</span> ${winner.team} wins!`);
     }
 
     start()
@@ -331,7 +343,8 @@ class Game
                 console.log("CHECK!");
                 if(this.isCheckMate(player)) 
                 {
-                    console.log("CHECKMATE!");
+                    console.log("CHECKMATE!", previous_player);
+                    this.endGame(previous_player);
                 }
                 this.setCheckedTile(king.row, king.col);
             }

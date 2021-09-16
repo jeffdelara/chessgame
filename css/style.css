@@ -62,9 +62,12 @@ header {
     grid-template-rows: repeat(8, var(--tile-percent));
     justify-content: center;
 }
-
+#timer {
+    font-size: 1.3rem;
+}
 #hud {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     font-weight: 800;
@@ -73,7 +76,6 @@ header {
 
 .hud {
     display: inline-block;
-    border-bottom: 4px solid var(--first-color);
 }
 
 .tile {
