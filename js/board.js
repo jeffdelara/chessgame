@@ -19,6 +19,19 @@ class Board
         };
     }
 
+    isTeamFace(content, team_name)
+    {
+        for(let team_face of this.face_pieces[team_name])
+        {
+            if(content === team_face)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     isEmpty(row, col)
     {
         const content = this.board[row][col];

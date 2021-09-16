@@ -19,7 +19,7 @@ class Game
         this.clicked_row = null;
         this.click_col = null;
 
-        this.message = "";
+        this.message = "WHITE's turn";
     }
 
     startTurn()
@@ -35,6 +35,27 @@ class Game
         this.incrementTurn();
         this.current_state = this.STATE.PLAYER_TURN;
         this.current_player = player;
+
+    }
+
+    startTimer(duration, display) {
+        let timer = duration;
+        let minutes = null;
+        let seconds = null; 
+
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10)
+            seconds = parseInt(timer % 60, 10);
+    
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+            display.textContent = minutes + ":" + seconds;
+    
+            if (--timer < 0) {
+                timer = duration;
+            }
+        }, 1000);
     }
 
     refreshTurn()
@@ -255,8 +276,10 @@ class Game
         this.setUpClickEvent();
         this.current_player = this.startTurn();
         console.log("Player turn: ", this.current_player.team);
-        this.message = this.current_player.team;
         this.displayHUD();
+
+        const display = document.querySelector("#timer");
+        // this.startTimer(this.current_player.getTime(), display);
     }
 
     getEnemy()
@@ -399,7 +422,12 @@ class Game
             
             const id = `#r${move[0]}c${move[1]}`;
             const div = document.querySelector(id);
-            div.classList.contains('black') ? div.classList.add('move-black') : div.classList.add('move');
+            
+            if(!this.board.isTeamFace(div.textContent, this.current_player.team))
+            {
+                div.classList.contains('black') ? div.classList.add('move-black') : div.classList.add('move');
+            }
+            
         }
         document.querySelector(`#r${on_hand.row}c${on_hand.col}`).classList.add('origin');
     }
@@ -465,6 +493,12 @@ class Game
                 console.log("Move cancelled.");
                 this.refreshTurn();
                 break;
+            
+            case 'new-pick':
+                console.log("New Pick.");
+                this.refreshTurn();
+                this.playerTurn();
+                break;
 
             case 'promote':
                 this.promotePawn(row, col);
@@ -510,7 +544,7 @@ class Game
 
         // update and render
         console.log("Player turn:", this.current_player.team);
-        this.message = this.current_player.team;
+        this.message = this.current_player.team + "'s turn";
         this.displayHUD();
         this.updateBoard();
         this.checkIfChecked();

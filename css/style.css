@@ -63,8 +63,13 @@ header {
     justify-content: center;
 }
 #timer {
-    font-size: 1.3rem;
+    
 }
+
+#message {
+    text-shadow: 1px 1px 1px white;
+}
+
 #hud {
     display: flex;
     flex-direction: column;
@@ -87,7 +92,9 @@ header {
 }
 
 .tile:hover {
-    background-color: burlywood;
+    /* background-color: burlywood; */
+    border: 5px solid #ff6e40;
+    font-size: 5.2rem;
 }
 
 .black {
@@ -113,7 +120,7 @@ header {
 }
 
 .origin {
-    background-color: lightyellow;
+    background-color: #ffc13b;
 }
 
 .check {
