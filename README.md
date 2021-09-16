@@ -6,12 +6,13 @@ Current features:
 - Movement and attack
 - Pawn movement and attack
 - Rook
-
-Todo:
 - Bishop
 - Knight
 - Queen 
 - King
+
+Todo:
 - Pawn promotion
 - Timer
 - Rook King Castling
+- Check / Checkmates
