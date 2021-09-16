@@ -123,27 +123,27 @@ class Game
 
     createPiecesForPlayers()
     {
-        this.createPawns();
-        this.createRooks();
-        this.createKnights();
-        this.createBishops();
-        this.createQueens();
+        // this.createPawns();
+        // this.createRooks();
+        // this.createKnights();
+        // this.createBishops();
+        // this.createQueens();
         this.createKings();
 
         // This part for testing purposes
         let white = this.players[0];
         let black = this.players[1];
         
-        // white.pieces.push(new Queen(7, 1, 'white'));
-        // white.pieces.push(new Rook(7, 0, 'white'));
-        // white.pieces.push(new Knight(3,3, 'white'));
-        // white.pieces.push(new King(5, 4, 'white'));
-        // white.pieces.push(new Bishop(3, 3, 'white'));
-        // black.pieces.push(new Rook(0, 0, 'black'));
-        // black.pieces.push(new Knight(0, 7, 'black'));
-        // black.pieces.push(new Pawn(1, 3, 'black'));
-        // // black.pieces.push(new King(1, 4, 'black'));
-        // black.pieces.push(new Bishop(2, 2, 'black'));
+        black.pieces.push(new Rook(2, 7, 'black'));
+        black.pieces.push(new Bishop(2, 3, 'black'));
+        white.pieces.push(new Pawn(6, 4, 'white'));
+        // white.pieces.push(new King(3, 3, 'white'));
+        white.pieces.push(new Pawn(6, 5, 'white'));
+        white.pieces.push(new Pawn(6, 6, 'white'));
+        white.pieces.push(new Pawn(6, 3, 'white'));
+        white.pieces.push(new Knight(6, 2, 'white'));
+        // black.pieces.push(new King(0, 3, 'black'));
+        black.pieces.push(new Queen(0, 1, 'black'));
     }
 
     getAllGamePiecesOnBoard()
@@ -276,6 +276,39 @@ class Game
         return this.checkedTile !== null;
     }
 
+    isCheckMate(player)
+    {
+        const king = player.getKing();
+        let no_moves = false;
+        let can_kill_checker = false;
+        let can_block_checker = false;
+
+        if(king.hasNoMoves()) 
+        {
+            console.log("King has no moves left.");
+            no_moves = true;
+
+            if(player.canKillChecker())
+            {
+                console.log("But the checker can be killed.");
+                can_kill_checker = true;
+            }
+            
+            if(player.canBlockChecker())
+            {
+                console.log("You can block the checker.");
+                can_block_checker = true;
+            }
+        }
+
+        else 
+        {
+            console.log("You can still move.");
+        }
+
+        return no_moves && !can_kill_checker && !can_block_checker;
+    }
+
     checkIfChecked()
     {
         const enemy = this.players[(this.turn+1) % 2];
@@ -283,30 +316,25 @@ class Game
 
         const enemy_check = enemy.isCheckedBy(previous_player);
         const player_check = previous_player.isCheckedBy(enemy);
-        
-        if(enemy_check)
-        {
-            const enemy_king = enemy.getKing();
-            // console.log("CHECK!", enemy_king.row, enemy_king.col);
-            if(enemy_king.hasNoMoves()) 
-            {
-                console.log("Possible CHECK MATE");
-                // TODO: Analyze if 'check' can be blocked
-            }
-            this.setCheckedTile(enemy_king.row, enemy_king.col);
-        }
 
-        if(player_check)
-        {
-            const previous_player_king = previous_player.getKing();
-            // console.log("CHECK! My own move made me checked.");
+        const players = [enemy, previous_player];
+        const checks = [enemy_check, player_check];
 
-            if(previous_player_king.hasNoMoves()) 
+        for(let i = 0; i < players.length; i++)
+        {
+            let player = players[i];
+            let check = checks[i];
+
+            if(check)
             {
-                console.log("Possible CHECK MATE");
-                // TODO: Analyze if 'check' can be blocked
+                const king = player.getKing();
+                console.log("CHECK!");
+                if(this.isCheckMate(player)) 
+                {
+                    console.log("CHECKMATE!");
+                }
+                this.setCheckedTile(king.row, king.col);
             }
-            this.setCheckedTile(previous_player_king.row, previous_player_king.col);
         }
 
         if(!enemy_check && !player_check)

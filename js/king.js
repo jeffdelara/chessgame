@@ -53,7 +53,6 @@ class King extends Piece
 
     createDangerTiles(game_pieces)
     {
-        console.log(this.team);
         this.danger_tiles = [];
         for(let i = 0; i < game_pieces.length; i++)
         {

@@ -7,19 +7,133 @@ class Player
         this.on_hand = null;
         this.captures = [];
         this.isChecked = false;
+        this.checked_by = null;
     }
 
-    check()
+    check(enemy_piece)
     {
         this.isChecked = true;
+        this.checked_by = enemy_piece;
+    }
+
+    canKillChecker()
+    {
+        for(let piece of this.pieces)
+        {
+            for(let move of piece.move_set)
+            {
+                const row = move[0];
+                const col = move[1];
+                if(this.checked_by.row === row && this.checked_by.col === col) return true;
+            }
+        }
+
+        return false;
+    }
+
+    isOutOfBounds(row, col)
+    {
+        return (row < 0 || row > 7 || col < 0 || col > 7);
+    }
+
+    searchInDirection(direction)
+    {
+        const king = this.getKing();
+        let moves = [];
+        let coor = [];
+
+        for(let i = 0; i < 8; i++)
+        {
+            switch (direction.toUpperCase()) {
+                case 'BOTTOMRIGHT':
+                    coor = [king.row + i, king.col + i];
+                    break;
+    
+                case 'TOPRIGHT':
+                    coor = [king.row - i, king.col + i];
+                    break;
+    
+                case 'TOPLEFT':
+                    coor = [king.row - i, king.col - i];
+                    break;
+    
+                case 'BOTTOMLEFT':
+                    coor = [king.row + i, king.col - i];
+                    break;
+    
+                case 'RIGHT':
+                    coor = [king.row, king.col + i];
+                    break;
+    
+                case 'LEFT':
+                    coor = [king.row, king.col - i];
+                    break;
+    
+                case 'TOP':
+                    coor = [king.row - i, king.col];
+                    break;
+    
+                case 'BOTTOM':
+                    coor = [king.row + i, king.col];
+                    break;
+            
+                default:
+                    break;
+            }
+            if(this.isOutOfBounds(coor[0], coor[1])) break;
+            moves.push(coor);
+        }
+
+        return {direction: direction.toUpperCase(), moves: moves}
+        
+    }
+
+    searchCheckOrigin()
+    {
+        const directions = ['top', 'right', 'bottom', 'left', 'topleft', 'topright', 'bottomleft', 'bottomright'];
+        
+        for(let direction of directions)
+        {
+            const vector = this.searchInDirection(direction);
+            
+            for(let move of vector.moves)
+            {
+                if(this.checked_by.row === move[0] && this.checked_by.col === move[1]) return vector;
+            }
+        }
+        
+        return false; // can not find
+    }
+
+    canBlockChecker()
+    {
+        const checker = this.searchCheckOrigin();
+        if(checker)
+        {
+            for(let check_move of checker.moves) 
+            {
+                for(let my_piece of this.pieces) 
+                {
+                    for(let my_piece_moveset of my_piece.move_set)
+                    {
+                        if(my_piece_moveset[0] === check_move[0] && my_piece_moveset[1] === check_move[1])
+                        {
+                            console.log(my_piece.face, my_piece_moveset[0], my_piece_moveset[1], check_move[0], check_move[1]);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log("Checker can't be blocked");
+        return false;
     }
 
     removeCheck()
     {
         this.isChecked = false;
     }
-
-    
 
     searchPiece(piece)
     {
@@ -93,7 +207,7 @@ class Player
             if(piece.name === 'KING') return piece;
         }
 
-        console.log("There is no king for ", this.team, "YOU WIN!");
+        console.log("There is no king for ", this.team);
         return false;
     }
 
@@ -112,7 +226,7 @@ class Player
                 const move = player_piece.move_set[j];
                 if(king.row === move[0] && king.col === move[1]) 
                 {
-                    this.check();
+                    this.check(player_piece);
                     return true;
                 }
             }
@@ -153,12 +267,6 @@ class Player
                 this.dropHand();
                 return {message: "promote"};
             }
-
-            // if(this.on_hand.name === "KING" && this.on_hand.isDangerTile(to.row, to.col))
-            // {
-            //     console.log("Danger tile", );
-            //     return { message: "cancel" };
-            // }
 
             board.move(this.on_hand, to);
             this.dropHand();
