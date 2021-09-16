@@ -65,8 +65,6 @@ class Board
         }
 
         return true;
-
-
     }
 
     refreshBoard()

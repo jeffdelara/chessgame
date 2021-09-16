@@ -3,8 +3,9 @@
 :root {
     --size: 1rem;
     --tile-percent: 5.5vw;
-    --black: gray;
+    --black: #DDD;
     --white: white;
+    --first-color: #1e3d59;
 }
 
 * {
@@ -15,7 +16,8 @@
 }
 body {
     font-family: 'Old Standard TT', serif;
-    background-color: whitesmoke;
+    background-color: #f5f0e1;
+    color: #1e3d59;
     position: relative;
     user-select: none;
 }
@@ -23,7 +25,7 @@ body {
 main {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 1fr 3fr 1fr;
     height: 100vh;
 }
 
@@ -39,7 +41,7 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 4.5rem;
+    font-size: 3rem;
 }
 
 
@@ -50,18 +52,34 @@ header {
 }
 
 .container {
-    
     display: flex;
     align-items: center;
     justify-content: center;
 }
 #chessboard {
+    border-radius: 1rem;
+    overflow: hidden;
     display: grid;
     grid-template-columns: repeat(8, var(--tile-percent));
     grid-template-rows: repeat(8, var(--tile-percent));
-    border: 1rem solid #AAA;
     justify-content: center;
 }
+#timer {
+    font-size: 1.3rem;
+}
+#hud {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 800;
+    font-size: 2rem;
+}
+
+.hud {
+    display: inline-block;
+}
+
 .tile {
    display: flex;
    justify-content: center;
@@ -89,7 +107,33 @@ header {
 
 
 .move {
-    background-color: rgba(0, 111, 0, .5) !important;
+    background-color: rgba(0, 111, 0, .3) !important;
+}
+
+.move-black {
+    background-color: rgba(0, 111, 0, .4) !important;
+}
+
+.origin {
+    background-color: lightyellow;
+}
+
+.check {
+    background-color: rgb(222,49,99) !important;
+}
+
+@media (max-width: 1200px) {
+    #chessboard {
+        grid-template-columns: repeat(8, 7vw);
+        grid-template-rows: repeat(8, 7vw);
+    }
+}
+
+@media (max-width: 1000px) {
+    #chessboard {
+        grid-template-columns: repeat(8, 9vw);
+        grid-template-rows: repeat(8, 9vw);
+    }
 }
 
 @media (max-width: 800px) {
