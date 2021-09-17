@@ -8,7 +8,49 @@ class Player
         this.captures = [];
         this.isChecked = false;
         this.checked_by = null;
-        this.time = 60 * 30;
+        this.time_remaining = 60 * 30;
+    }
+
+    startTime() {
+        this.showTime("#timer");
+        this.timer = setInterval(function(){
+            this.countdown();
+        }.bind(this), 1000);
+    }
+
+    stopTime()
+    {
+        clearInterval(this.timer);
+        console.log("time stopped");
+    }
+
+    resetTime()
+    {
+        this.time_remaining = 60 * 30;
+    }
+
+    showTime(display_id)
+    {
+        let minutes = null;
+        let seconds = null; 
+
+        minutes = parseInt(this.time_remaining / 60, 10);
+        seconds = parseInt(this.time_remaining % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        const display = document.querySelector(display_id);
+        display.textContent = minutes + ":" + seconds;
+    }
+
+    countdown()
+    {
+        this.showTime("#timer");
+
+        if (--this.time_remaining < 0) {
+            this.time_remaining = this.resetTime;
+        }
     }
 
     check(enemy_piece)

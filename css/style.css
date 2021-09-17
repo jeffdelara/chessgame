@@ -71,6 +71,13 @@ header {
     
 }
 
+#timerhud {
+    color: var(--first-color);
+    line-height: 2rem;
+    padding: .3rem .8rem;
+    padding-top: .5rem;
+}
+
 .subtitle {
     font-size: 1rem;
 }
@@ -138,11 +145,10 @@ header {
 }
 
 .check {
-    
     text-transform: uppercase;
     border-radius: 3px;
     margin: 0;
-    background-color: rgba(222,49,99, .1);
+    background-color: rgba(222,49,99, 1);
 }
 
 #check {
