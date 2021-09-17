@@ -9,17 +9,25 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- <header>
-        <h1>Chess ♞♜♛</h1>
-        <p>Chess game made in html/css, javascript</p>
-        <div id="debug"></div>
-    </header> -->
-
-    <main>
+    <header>
         <div id="hud">
+            <h1 class="logo">Chess Game ♜</h1>
+            <div class="subtitle">TURN</div>
             <div id="message"></div>
             <div><i class='bx bx-timer'></i> <span id="timer">30:00</span></div>
+            <div id="check" class="check"></div>
         </div>
+    </header>
+
+    <!-- <div id="promo-modal">
+        <div><h2 id="promotion">promotion</h2></div>
+        <div id="promo-queen" class="promo-choice">♛</div>
+        <div id="promo-queen" class="promo-choice">♜</div>
+        <div id="promo-queen" class="promo-choice">♝</div>
+        <div id="promo-queen" class="promo-choice">♞</div>
+    </div> -->
+
+    <main>
         <div id="black" class="bench"></div>
         <div class="container">
         </div>
