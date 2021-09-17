@@ -61,7 +61,7 @@ class Piece
                 }
                 else
                 {
-                    return { isBlocked: true, type: 'ally' };
+                    return { isBlocked: true, type: 'ally', piece: piece };
                 }   
             }
         }

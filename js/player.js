@@ -8,12 +8,23 @@ class Player
         this.captures = [];
         this.isChecked = false;
         this.checked_by = null;
+        this.time = 60 * 30;
     }
 
     check(enemy_piece)
     {
         this.isChecked = true;
         this.checked_by = enemy_piece;
+    }
+
+    setTime(time_in_seconds)
+    {
+        this.time = time_in_seconds;
+    }
+
+    getTime()
+    {
+        return this.time;
     }
 
     canKillChecker()
@@ -189,6 +200,11 @@ class Player
         this.on_hand = piece;
     }
 
+    getOnHand()
+    {
+        return this.on_hand;
+    }
+
     dropHand()
     {
         this.on_hand = null;
@@ -241,11 +257,27 @@ class Player
         return false;
     }
 
+    isOtherPiece(row, col)
+    {
+        const all_other_pieces = this.pieces;
+        
+        for(let other_piece of all_other_pieces)
+        {
+            if(other_piece.row === row && other_piece.col === col)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // piece object 
     // board object
     // to object ({row: "", col: ""})
     move(to, board)
     {
+
         if(this.isSamePlace(to.row, to.col)) 
         {
             console.log("This is same");
@@ -253,12 +285,22 @@ class Player
             return { message: "cancel" };
         }
 
+        if(this.isOtherPiece(to.row, to.col) || !this.isMoveInMoveSet(to.row, to.col, this.on_hand))
+        {
+            this.cancelMove();
+            return { message: "new-pick" };
+        }
+
         // do i own the piece and is it a valid move?
         if(this.doPlayerOwnPiece(this.on_hand) && 
            this.isMoveInMoveSet(to.row, to.col, this.on_hand))
         {
             const my_piece = this.searchPieceByCoordinates(to.row, to.col);
-            if(my_piece) return {message: "fail"};
+            if(my_piece)
+            {
+                console.log("Tile occupied by ally.");
+                return {message: "fail"}
+            }
 
             if(board.isAnAttack(this.on_hand, to))
             {

@@ -73,8 +73,14 @@ class Knight extends Piece
                 this.move_set.push([potential_row, potential_col]);
                 return true;
             }
+            
             if(isBlocked.type === 'ally')
             {
+                if(isBlocked.piece.name === "KING")
+                {
+                    return false;
+                }
+
                 this.move_set.push([potential_row, potential_col]);
                 return false;
             }

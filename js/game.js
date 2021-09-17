@@ -19,7 +19,7 @@ class Game
         this.clicked_row = null;
         this.click_col = null;
 
-        this.message = "";
+        this.message = "WHITE";
     }
 
     startTurn()
@@ -35,6 +35,27 @@ class Game
         this.incrementTurn();
         this.current_state = this.STATE.PLAYER_TURN;
         this.current_player = player;
+
+    }
+
+    startTimer(duration, display) {
+        let timer = duration;
+        let minutes = null;
+        let seconds = null; 
+
+        setInterval(function () {
+            minutes = parseInt(timer / 60, 10)
+            seconds = parseInt(timer % 60, 10);
+    
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+    
+            display.textContent = minutes + ":" + seconds;
+    
+            if (--timer < 0) {
+                timer = duration;
+            }
+        }, 1000);
     }
 
     refreshTurn()
@@ -123,28 +144,28 @@ class Game
 
     createPiecesForPlayers()
     {
-        this.createPawns();
-        this.createRooks();
-        this.createKnights();
-        this.createBishops();
-        this.createQueens();
-        this.createKings();
+        // this.createPawns();
+        // this.createRooks();
+        // this.createKnights();
+        // this.createBishops();
+        // this.createQueens();
+        // this.createKings();
 
         // This part for testing purposes
-        // let white = this.players[0];
-        // let black = this.players[1];
+        let white = this.players[0];
+        let black = this.players[1];
         
-        // black.pieces.push(new Rook(2, 7, 'black'));
-        // black.pieces.push(new Bishop(2, 3, 'black'));
-        // white.pieces.push(new Pawn(6, 4, 'white'));
-        // white.pieces.push(new King(4, 0, 'white'));
-        // white.pieces.push(new Pawn(6, 5, 'white'));
-        // white.pieces.push(new Pawn(6, 6, 'white'));
-        // white.pieces.push(new Pawn(6, 3, 'white'));
-        // white.pieces.push(new Knight(6, 2, 'white'));
-        // black.pieces.push(new King(0, 3, 'black'));
-        // black.pieces.push(new Rook(1, 1, 'black'));
-        // black.pieces.push(new Queen(2, 1, 'black'));
+        black.pieces.push(new Rook(2, 7, 'black'));
+        black.pieces.push(new Bishop(2, 3, 'black'));
+        white.pieces.push(new Pawn(6, 4, 'white'));
+        white.pieces.push(new King(4, 0, 'white'));
+        white.pieces.push(new Pawn(6, 5, 'white'));
+        white.pieces.push(new Pawn(6, 6, 'white'));
+        white.pieces.push(new Pawn(6, 3, 'white'));
+        white.pieces.push(new Knight(6, 2, 'white'));
+        black.pieces.push(new King(0, 3, 'black'));
+        black.pieces.push(new Rook(1, 1, 'black'));
+        black.pieces.push(new Queen(2, 1, 'black'));
     }
 
     getAllGamePiecesOnBoard()
@@ -240,8 +261,13 @@ class Game
 
     endGame(winner)
     {
-        this.setHUDMessage(`<span style="color:rgb(222,49,99);">CHECKMATE!</span> ${winner.team} wins!`);
+        console.log("GAME OVER");
+        this.current_state = this.STATE.QUIT;
+        this.setHUDMessage(`${winner.team} wins!`);
     }
+
+    showModal() {}
+    closeModal() {}
 
     start()
     {
@@ -255,8 +281,10 @@ class Game
         this.setUpClickEvent();
         this.current_player = this.startTurn();
         console.log("Player turn: ", this.current_player.team);
-        this.message = this.current_player.team;
         this.displayHUD();
+
+        const display = document.querySelector("#timer");
+        // this.startTimer(this.current_player.getTime(), display);
     }
 
     getEnemy()
@@ -321,6 +349,21 @@ class Game
         return no_moves && !can_kill_checker && !can_block_checker;
     }
 
+    showCheckHUD(message)
+    {
+        const check = document.querySelector("#check");
+        check.innerHTML = "";
+        check.innerHTML = message; 
+        check.style.display = "block";
+    }
+
+    hideCheckHUD()
+    {
+        const check = document.querySelector("#check");
+        check.innerHTML = "";
+        check.style.display = "none";
+    }
+
     checkIfChecked()
     {
         const enemy = this.players[(this.turn+1) % 2];
@@ -341,9 +384,11 @@ class Game
             {
                 const king = player.getKing();
                 console.log("CHECK!");
+                this.showCheckHUD("CHECK!");
                 if(this.isCheckMate(player)) 
                 {
                     console.log("CHECKMATE!", previous_player);
+                    this.showCheckHUD("CHECKMATE!");
                     this.endGame(previous_player);
                 }
                 this.setCheckedTile(king.row, king.col);
@@ -352,6 +397,7 @@ class Game
 
         if(!enemy_check && !player_check)
         {
+            this.hideCheckHUD();
             this.unsetCheckedTile();
         }
 
@@ -399,7 +445,12 @@ class Game
             
             const id = `#r${move[0]}c${move[1]}`;
             const div = document.querySelector(id);
-            div.classList.contains('black') ? div.classList.add('move-black') : div.classList.add('move');
+            
+            if(!this.board.isTeamFace(div.textContent, this.current_player.team))
+            {
+                div.classList.contains('black') ? div.classList.add('move-black') : div.classList.add('move');
+            }
+            
         }
         document.querySelector(`#r${on_hand.row}c${on_hand.col}`).classList.add('origin');
     }
@@ -465,6 +516,12 @@ class Game
                 console.log("Move cancelled.");
                 this.refreshTurn();
                 break;
+            
+            case 'new-pick':
+                console.log("New Pick.");
+                this.refreshTurn();
+                this.playerTurn();
+                break;
 
             case 'promote':
                 this.promotePawn(row, col);
@@ -502,6 +559,10 @@ class Game
 
             case this.STATE.PLAYER_PROMOTION:
                 // awaiting choice queen, rook, bishop, knight
+                break;
+
+            case this.STATE.QUIT:
+                console.log("GAME ENDED.");
                 break;
         
             default:
