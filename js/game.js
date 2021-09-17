@@ -31,32 +31,17 @@ class Game
 
     endTurn()
     {
+        // previous player
+        this.current_player.stopTime();
+
         let player = this.players[this.turn % 2];
         this.incrementTurn();
         this.current_state = this.STATE.PLAYER_TURN;
         this.current_player = player;
-
+        this.current_player.startTime();
     }
 
-    startTimer(duration, display) {
-        let timer = duration;
-        let minutes = null;
-        let seconds = null; 
-
-        setInterval(function () {
-            minutes = parseInt(timer / 60, 10)
-            seconds = parseInt(timer % 60, 10);
     
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-    
-            display.textContent = minutes + ":" + seconds;
-    
-            if (--timer < 0) {
-                timer = duration;
-            }
-        }, 1000);
-    }
 
     refreshTurn()
     {
@@ -261,6 +246,9 @@ class Game
 
     endGame(winner)
     {
+        this.players[0].stopTime();
+        this.players[1].stopTime();
+
         console.log("GAME OVER");
         this.current_state = this.STATE.QUIT;
         this.setHUDMessage(`${winner.team} wins!`);
@@ -280,11 +268,11 @@ class Game
 
         this.setUpClickEvent();
         this.current_player = this.startTurn();
+        this.current_player.startTime();
         console.log("Player turn: ", this.current_player.team);
         this.displayHUD();
 
         const display = document.querySelector("#timer");
-        // this.startTimer(this.current_player.getTime(), display);
     }
 
     getEnemy()
@@ -380,9 +368,18 @@ class Game
             let player = players[i];
             let check = checks[i];
 
+            const king = player.getKing();
+
+            if(!king) 
+            {
+                this.showCheckHUD("King is captured!");
+                this.endGame(previous_player);
+                break;
+            }
+
             if(check)
             {
-                const king = player.getKing();
+
                 console.log("CHECK!");
                 this.showCheckHUD("CHECK!");
                 if(this.isCheckMate(player)) 
