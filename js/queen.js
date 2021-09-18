@@ -82,7 +82,8 @@ class Queen extends Piece
                 {
                     if(isBlocked.piece.name === "KING")
                     {
-                        continue;
+                        this.move_set.push([potential_row, potential_col]);
+                        break;
                     }
 
                     this.move_set.push([potential_row, potential_col]);
@@ -96,13 +97,12 @@ class Queen extends Piece
     createMoveSet(game_pieces)
     {
         this.clearMoveSet();
-        this.createMoveSetWithDirection('up', game_pieces);
-        this.createMoveSetWithDirection('down', game_pieces);
-        this.createMoveSetWithDirection('left', game_pieces);
-        this.createMoveSetWithDirection('right', game_pieces); 
-        this.createMoveSetWithDirection('topleft', game_pieces);
-        this.createMoveSetWithDirection('topright', game_pieces);
-        this.createMoveSetWithDirection('bottomleft', game_pieces);
-        this.createMoveSetWithDirection('bottomright', game_pieces);  
+        
+        const MOVES = ['up', 'down', 'left', 'right', 'topleft', 'topright', 'bottomleft', 'bottomright'];
+
+        for(let move of MOVES)
+        {
+            this.createMoveSetWithDirection(move, game_pieces);     
+        }
     }
 }

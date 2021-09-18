@@ -57,6 +57,7 @@ class Player
     {
         this.isChecked = true;
         this.checked_by = enemy_piece;
+        this.getKing().isChecked = true;
     }
 
     setTime(time_in_seconds)
@@ -191,6 +192,7 @@ class Player
     removeCheck()
     {
         this.isChecked = false;
+        this.getKing().isChecked = false;
     }
 
     searchPiece(piece)
@@ -314,6 +316,41 @@ class Player
         return false;
     }
 
+    getRookLeft()
+    {
+        let pieces = this.pieces;
+        
+        for(let piece of pieces)
+        {
+            if(piece.team === this.team 
+            && piece.name === 'ROOK'
+            && piece.col === 0)
+            {
+                console.log("GET ROOK LEFT", piece);
+                return piece;
+            }
+        }
+        return false;
+    }
+
+    getRookRight()
+    {
+        let pieces = this.pieces;
+        
+        for(let piece of pieces)
+        {
+            if(piece.team === this.team 
+            && piece.name === 'ROOK' 
+            && piece.col === 7)
+            {
+                console.log("GET ROOK RIGHT", piece);
+                return piece;
+            }
+        }
+
+        return false;
+    }
+
     // piece object 
     // board object
     // to object ({row: "", col: ""})
@@ -359,6 +396,41 @@ class Player
                 this.dropHand();
                 return {message: "promote"};
             }
+
+            if(this.on_hand.name === 'KING' 
+            && this.on_hand.isCastlingMoveValid(to.row, to.col)) 
+            {
+                // move rook
+                let rook = null;
+                let rook_to = { row: this.on_hand.row, col: null};
+                
+                if(to.col > this.on_hand.col) 
+                {
+                    rook = this.getRookRight();
+                    rook_to.col = to.col - 1;
+                }
+
+                else 
+                {
+                    rook = this.getRookLeft();
+                    rook_to.col = to.col + 1;
+                }
+
+                // move king
+                board.move(this.on_hand, to);
+
+                // move rook
+                board.move(rook, rook_to);
+
+                // set rook and king as moved
+                this.on_hand.hasMoved();
+                rook.hasMoved();
+
+                this.dropHand();
+                return { message: "castling" };
+            }
+
+            if(this.on_hand.name === 'KING' || this.on_hand.name === 'ROOK') this.on_hand.hasMoved();
 
             board.move(this.on_hand, to);
             this.dropHand();
