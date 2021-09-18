@@ -61,7 +61,8 @@ class Bishop extends Piece
                 {
                     if(isBlocked.piece.name === "KING")
                     {
-                        continue;
+                        this.move_set.push([potential_row, potential_col]);
+                        break;
                     }
                     this.move_set.push([potential_row, potential_col]);
                     break;

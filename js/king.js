@@ -8,6 +8,14 @@ class King extends Piece
         this.max_step = 1;
         this.name = 'KING';
         this.danger_tiles = [];
+        this.has_moved = false;
+        this.isChecked = false;
+        this.castling_move_set = [];
+    }
+
+    hasMoved()
+    {
+        this.has_moved = true;
     }
 
     deleteMoveSet(row, col)
@@ -124,6 +132,7 @@ class King extends Piece
             potential_col = this.col + i;
         }
 
+
         if(this.isOutOfBounds(potential_row, potential_col)) return false;
         const isBlocked = this.isBlockedForward(game_pieces, {row: potential_row, col: potential_col});
 
@@ -142,16 +151,159 @@ class King extends Piece
         this.move_set.push([potential_row, potential_col]);
     }
 
+
+    isCastlingBlocked(game_pieces)
+    {
+        let blocked = {
+            right: true,
+            left: true
+        };
+
+        for(let i = 0; i < 8; i++)
+        {            
+            if(this.isOutOfBounds(this.row, this.col + i)) break;
+            if(this.isOutOfBounds(this.row, this.col - i)) break;
+
+            const blocked_right = this.isBlockedForward(game_pieces, { row: this.row, col: this.col + i });
+            
+            if(blocked_right.type === 'ally' && 
+               blocked_right.piece.name === 'ROOK' && 
+               !blocked_right.piece.has_moved)
+            {
+                blocked.right = false;
+            }
+
+            const blocked_left = this.isBlockedForward(game_pieces, {row: this.row, col: this.col - i});
+
+            if(blocked_left.type === 'ally' && 
+                blocked_left.piece.name === 'ROOK' && 
+               !blocked_left.piece.has_moved)
+            {
+                blocked.left = false;
+            }
+        }
+        return blocked;
+    }
+
+    getCastlingTiles(game_pieces)
+    {
+        let tiles = {
+            LEFT: [],
+            RIGHT: []
+        }
+
+        for(let i = 0; i < 8; i++)
+        {
+            if(this.isOutOfBounds(this.row, this.col + i)) break;
+            if(this.isOutOfBounds(this.row, this.col - i)) break;
+            if(this.isCurrentLocation(this.row, this.col + i)) continue;
+            if(this.isCurrentLocation(this.row, this.col - i)) continue;
+
+            const potential_row = this.row;
+            const potential_col_left = this.col - i;
+            const not_blocked_left = !this.isBlockedForward(game_pieces, {row: potential_row, col: potential_col_left});
+        
+            const potential_col_right = this.col + i;
+            const not_blocked_right = !this.isBlockedForward(game_pieces, {row: potential_row, col: potential_col_right});
+
+            if(not_blocked_left)
+            { 
+                tiles.LEFT.push([potential_row, potential_col_left]);
+            }
+
+            if(not_blocked_right)
+            {
+                tiles.RIGHT.push([potential_row, potential_col_right]);
+            }
+        }
+
+        return tiles;
+    }
+
+    isCastlingTileFreeFromAttack(game_pieces)
+    {
+        const tiles = this.getCastlingTiles(game_pieces);
+
+        console.log(tiles);
+
+        let LEFT = true;
+        let RIGHT = true;
+
+        for(let piece of game_pieces)
+        {
+            if(piece.team !== this.team)
+            {
+                for(let move of piece.move_set)
+                {
+                    for(let castling_move of tiles.LEFT)
+                    {
+                        if(move[0] === castling_move[0] && move[1] === castling_move[1])
+                        {
+                            LEFT = false;
+                        }
+                    }
+
+                    for(let castling_move of tiles.RIGHT)
+                    {
+                        if(move[0] === castling_move[0] && move[1] === castling_move[1])
+                        {
+                            RIGHT = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return { LEFT: LEFT, RIGHT: RIGHT };
+    }
+
+    addCastlingMove(move)
+    {
+        this.castling_move_set.push(move);
+        this.move_set.push(move);
+    }
+
+    refreshCastlingMove()
+    {
+        this.castling_move_set = [];
+    }
+
+    createCastlingMoves(game_pieces)
+    {
+        this.refreshCastlingMove();
+        if(this.has_moved) return false;
+        if(this.isChecked) return false;
+
+        // tiles must not be blocked 
+        const blocked = this.isCastlingBlocked(game_pieces);
+        if(blocked.left && blocked.right) return false;
+        
+        // tiles must not be attacked 
+        const castling_clearance = this.isCastlingTileFreeFromAttack(game_pieces);
+
+        // castling coordinates
+        if(castling_clearance.LEFT)
+        {
+            const castling_left = [ this.row, this.col - 2 ];
+            this.addCastlingMove(castling_left);
+        }
+
+        if(castling_clearance.RIGHT)
+        {
+            const castling_right = [ this.row, this.col + 2 ];
+            this.addCastlingMove(castling_right);
+        }
+        
+    }
+
     createMoveSet(game_pieces)
     {
         this.clearMoveSet();
-        this.createMoveSetWithDirection('up', game_pieces);
-        this.createMoveSetWithDirection('down', game_pieces);
-        this.createMoveSetWithDirection('left', game_pieces);
-        this.createMoveSetWithDirection('right', game_pieces); 
-        this.createMoveSetWithDirection('topleft', game_pieces);
-        this.createMoveSetWithDirection('topright', game_pieces);
-        this.createMoveSetWithDirection('bottomleft', game_pieces);
-        this.createMoveSetWithDirection('bottomright', game_pieces);  
+        const MOVES = ['up', 'down', 'left', 'right', 'topleft', 'topright', 'bottomleft', 'bottomright'];
+
+        for(let move of MOVES)
+        {
+            this.createMoveSetWithDirection(move, game_pieces);     
+        }
     }
 }

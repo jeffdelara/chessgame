@@ -57,6 +57,7 @@ class Player
     {
         this.isChecked = true;
         this.checked_by = enemy_piece;
+        this.getKing().isChecked = true;
     }
 
     setTime(time_in_seconds)
@@ -191,6 +192,7 @@ class Player
     removeCheck()
     {
         this.isChecked = false;
+        this.getKing().isChecked = false;
     }
 
     searchPiece(piece)
@@ -359,6 +361,8 @@ class Player
                 this.dropHand();
                 return {message: "promote"};
             }
+
+            if(this.on_hand.name === 'KING' || this.on_hand.name === 'ROOK') this.on_hand.hasMoved();
 
             board.move(this.on_hand, to);
             this.dropHand();

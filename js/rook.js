@@ -7,6 +7,13 @@ class Rook extends Piece
         this.face = team.toUpperCase() === 'BLACK' ? '♜' : '♖';
         this.move_set = [];
         this.max_step = 8;
+        this.has_moved = false;
+        this.name = 'ROOK';
+    }
+
+    hasMoved()
+    {
+        this.has_moved = true;
     }
 
     createMoveSetWithDirection(direction, game_pieces)
@@ -58,7 +65,8 @@ class Rook extends Piece
                 {
                     if(isBlocked.piece.name === "KING")
                     {
-                        continue;
+                        this.move_set.push([potential_row, potential_col]);
+                        break;
                     }
                     this.move_set.push([potential_row, potential_col]);
                     break;
