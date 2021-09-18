@@ -188,8 +188,8 @@ class King extends Piece
     getCastlingTiles(game_pieces)
     {
         let tiles = {
-            LEFT: [],
-            RIGHT: []
+            left: [],
+            right: []
         }
 
         for(let i = 0; i < 8; i++)
@@ -208,12 +208,12 @@ class King extends Piece
 
             if(not_blocked_left)
             { 
-                tiles.LEFT.push([potential_row, potential_col_left]);
+                tiles.left.push([potential_row, potential_col_left]);
             }
 
             if(not_blocked_right)
             {
-                tiles.RIGHT.push([potential_row, potential_col_right]);
+                tiles.right.push([potential_row, potential_col_right]);
             }
         }
 
@@ -224,10 +224,8 @@ class King extends Piece
     {
         const tiles = this.getCastlingTiles(game_pieces);
 
-        console.log(tiles);
-
-        let LEFT = true;
-        let RIGHT = true;
+        let left = true;
+        let right = true;
 
         for(let piece of game_pieces)
         {
@@ -235,26 +233,26 @@ class King extends Piece
             {
                 for(let move of piece.move_set)
                 {
-                    for(let castling_move of tiles.LEFT)
+                    for(let castling_move of tiles.left)
                     {
                         if(move[0] === castling_move[0] && move[1] === castling_move[1])
                         {
-                            LEFT = false;
+                            left = false;
                         }
                     }
 
-                    for(let castling_move of tiles.RIGHT)
+                    for(let castling_move of tiles.right)
                     {
                         if(move[0] === castling_move[0] && move[1] === castling_move[1])
                         {
-                            RIGHT = false;
+                            right = false;
                         }
                     }
                 }
             }
         }
 
-        return { LEFT: LEFT, RIGHT: RIGHT };
+        return { left: left, right: right };
     }
 
     addCastlingMove(move)
@@ -266,6 +264,21 @@ class King extends Piece
     refreshCastlingMove()
     {
         this.castling_move_set = [];
+    }
+
+    isCastlingMoveValid(row, col)
+    {
+        const castling_moves = this.castling_move_set;
+        
+        for(let move of castling_moves)
+        {
+            if(move[0] === row && move[1] === col)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     createCastlingMoves(game_pieces)
@@ -282,18 +295,19 @@ class King extends Piece
         const castling_clearance = this.isCastlingTileFreeFromAttack(game_pieces);
 
         // castling coordinates
-        if(castling_clearance.LEFT)
+        if(castling_clearance.left)
         {
             const castling_left = [ this.row, this.col - 2 ];
             this.addCastlingMove(castling_left);
         }
 
-        if(castling_clearance.RIGHT)
+        if(castling_clearance.right)
         {
             const castling_right = [ this.row, this.col + 2 ];
             this.addCastlingMove(castling_right);
         }
-        
+
+        return true;
     }
 
     createMoveSet(game_pieces)

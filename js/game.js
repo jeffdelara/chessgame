@@ -129,31 +129,31 @@ class Game
 
     createPiecesForPlayers()
     {
-        // this.createPawns();
-        // this.createRooks();
-        // this.createKnights();
-        // this.createBishops();
-        // this.createQueens();
-        // this.createKings();
+        this.createPawns();
+        this.createRooks();
+        this.createKnights();
+        this.createBishops();
+        this.createQueens();
+        this.createKings();
 
         // This part for testing purposes
-        let white = this.players[0];
-        let black = this.players[1];
+        // let white = this.players[0];
+        // let black = this.players[1];
         
-        white.pieces.push(new Pawn(6, 4, 'white'));
-        white.pieces.push(new King(7, 4, 'white'));
-        white.pieces.push(new Rook(7, 7, 'white'));
-        white.pieces.push(new Rook(7, 0, 'white'));
-        white.pieces.push(new Pawn(6, 5, 'white'));
-        white.pieces.push(new Pawn(6, 6, 'white'));
-        white.pieces.push(new Pawn(6, 3, 'white'));
-        white.pieces.push(new Knight(6, 2, 'white'));
+        // white.pieces.push(new Pawn(6, 4, 'white'));
+        // white.pieces.push(new King(7, 4, 'white'));
+        // white.pieces.push(new Rook(7, 7, 'white'));
+        // white.pieces.push(new Rook(7, 0, 'white'));
+        // white.pieces.push(new Rook(6, 5, 'white'));
+        // white.pieces.push(new Pawn(6, 6, 'white'));
+        // white.pieces.push(new Pawn(6, 3, 'white'));
+        // white.pieces.push(new Knight(6, 2, 'white'));
 
-        black.pieces.push(new King(0, 4, 'black'));
-        black.pieces.push(new Rook(0, 0, 'black'));
-        black.pieces.push(new Queen(2, 1, 'black'));
-        black.pieces.push(new Rook(0, 7, 'black'));
-        black.pieces.push(new Bishop(2, 3, 'black'));
+        // black.pieces.push(new King(0, 4, 'black'));
+        // black.pieces.push(new Rook(0, 0, 'black'));
+        // black.pieces.push(new Queen(2, 1, 'black'));
+        // black.pieces.push(new Rook(0, 7, 'black'));
+        // black.pieces.push(new Bishop(2, 3, 'black'));
     }
 
     getAllGamePiecesOnBoard()
@@ -283,8 +283,6 @@ class Game
         this.current_player.startTime();
         console.log("Player turn: ", this.current_player.team);
         this.displayHUD();
-
-        const display = document.querySelector("#timer");
     }
 
     getEnemy()
@@ -518,6 +516,12 @@ class Game
 
         switch (result.message) {
             case 'success':
+                this.endTurn();
+                break;
+
+            case 'castling':
+                console.log("castling");
+                this.showCheckHUD("King is captured!");
                 this.endTurn();
                 break;
 
