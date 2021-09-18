@@ -41,8 +41,6 @@ class Game
         this.current_player.startTime();
     }
 
-    
-
     refreshTurn()
     {
         this.current_state = this.STATE.PLAYER_TURN;
@@ -139,21 +137,21 @@ class Game
         // This part for testing purposes
         // let white = this.players[0];
         // let black = this.players[1];
-        
+
         // white.pieces.push(new Pawn(6, 4, 'white'));
         // white.pieces.push(new King(7, 4, 'white'));
-        // white.pieces.push(new Rook(7, 7, 'white'));
-        // white.pieces.push(new Rook(7, 0, 'white'));
-        // white.pieces.push(new Rook(6, 5, 'white'));
+        // white.pieces.push(new Pawn(7, 7, 'white'));
+        // white.pieces.push(new Pawn(7, 0, 'white'));
+        // white.pieces.push(new Pawn(6, 5, 'white'));
         // white.pieces.push(new Pawn(6, 6, 'white'));
         // white.pieces.push(new Pawn(6, 3, 'white'));
         // white.pieces.push(new Knight(6, 2, 'white'));
 
         // black.pieces.push(new King(0, 4, 'black'));
-        // black.pieces.push(new Rook(0, 0, 'black'));
-        // black.pieces.push(new Queen(2, 1, 'black'));
-        // black.pieces.push(new Rook(0, 7, 'black'));
-        // black.pieces.push(new Bishop(2, 3, 'black'));
+        // black.pieces.push(new Pawn(0, 0, 'black'));
+        // black.pieces.push(new Pawn(2, 1, 'black'));
+        // black.pieces.push(new Pawn(0, 7, 'black'));
+        // black.pieces.push(new Pawn(3, 4, 'black'));
     }
 
     getAllGamePiecesOnBoard()
@@ -206,10 +204,35 @@ class Game
         }
     }
 
-    monitorKing()
+    checkForEnPassant()
+    {
+        const all_pieces = this.getAllGamePiecesOnBoard();
+
+        for(let piece of all_pieces)
+        {
+            if(piece.name === 'PAWN')
+            {
+                const pawn = piece;
+
+                if(pawn.en_passant_state === pawn.en_passant_states.ENEMY_CHANCE)
+                {
+                    pawn.setEnPassantState(pawn.en_passant_states.DONE);
+                    console.log(this.current_player.team);
+                }
+
+                if(pawn.en_passant_state === pawn.en_passant_states.STEP)
+                {
+                    console.log("Pawn on" , pawn.row, pawn.col, "possible en passant.");
+                    pawn.setEnPassantState(pawn.en_passant_states.ENEMY_CHANCE);
+                }
+            }
+        }
+    }
+
+    monitorSpecialPieces()
     {
         this.createKingDangerTiles();
-        
+        this.checkForEnPassant();
     }
 
     updateBoard()
@@ -228,7 +251,7 @@ class Game
             }
         }
 
-        this.monitorKing();
+        this.monitorSpecialPieces();
     }
 
     renderBoard()
@@ -499,7 +522,7 @@ class Game
 
         if(!pick) return false;
         
-        console.log("Valid move. Pick a tile to drop your piece.", pick);
+        // console.log("Valid move. Pick a tile to drop your piece.", pick);
         player.keepOnHand(pick);
         this.current_state = this.STATE.PLAYER_MOVING;
 
@@ -507,7 +530,7 @@ class Game
 
     playerMoving()
     {
-        console.log("Is that the tile you want,", this.current_player.team);
+        // console.log("Is that the tile you want,", this.current_player.team);
         const row = this.clicked_row;
         const col = this.click_col;
         const player = this.current_player;
@@ -516,6 +539,13 @@ class Game
 
         switch (result.message) {
             case 'success':
+                this.endTurn();
+                break;
+
+            case 'en-passant':
+                console.log(result.message);
+                const enemy = result.enemy;
+                this.captureEnemyPiece(enemy.row, enemy.col);
                 this.endTurn();
                 break;
 

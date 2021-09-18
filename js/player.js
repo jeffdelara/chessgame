@@ -60,6 +60,33 @@ class Player
         this.getKing().isChecked = true;
     }
 
+    getEnemyPieces(game_pieces)
+    {
+        let enemies = [];
+
+        for(let piece of game_pieces)
+        {
+            if(piece.team === this.team)
+            {
+                enemies.push(piece);
+            }
+        }
+        return enemies;
+    }
+
+    searchEnemyPiece(game_pieces, row, col) 
+    {
+        for(let enemy of game_pieces)
+        {
+            if(enemy.row === row && enemy.col === col)
+            {
+                return enemy;
+            }
+        }
+
+        return false;
+    }
+
     setTime(time_in_seconds)
     {
         this.time = time_in_seconds;
@@ -389,14 +416,6 @@ class Player
                 return { message: "attack" };
             }
 
-            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
-            {
-                console.log("Pawn is at end. Promote the pawn.");
-                board.move(this.on_hand, to);
-                this.dropHand();
-                return {message: "promote"};
-            }
-
             if(this.on_hand.name === 'KING' 
             && this.on_hand.isCastlingMoveValid(to.row, to.col)) 
             {
@@ -431,6 +450,48 @@ class Player
             }
 
             if(this.on_hand.name === 'KING' || this.on_hand.name === 'ROOK') this.on_hand.hasMoved();
+
+            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
+            {
+                console.log("Pawn is at end. Promote the pawn.");
+                board.move(this.on_hand, to);
+                this.dropHand();
+                return {message: "promote"};
+            }
+
+            if(this.on_hand.name === 'PAWN' 
+            && this.on_hand.en_passant_state === 0)
+            {
+                const pawn = this.on_hand;
+
+                if(pawn.col === to.col)
+                {
+                    const steps = Math.abs(to.row - pawn.row);
+                    
+                    if(steps === 2) 
+                    {
+                        pawn.setEnPassantState(pawn.en_passant_states.STEP);
+                    }
+
+                    if(steps === 1)
+                    {
+                        pawn.setEnPassantState(pawn.en_passant_states.DONE);
+                    }
+                }
+            }
+
+            if(this.on_hand.name === 'PAWN')
+            {
+                const pawn = this.on_hand;
+                
+                if(pawn.isEnPassantMove(to.row, to.col))
+                {
+                    board.move(this.on_hand, to);
+                    this.dropHand();
+
+                    return { message: "en-passant", enemy: pawn.en_passant_object.enemy };
+                }
+            }
 
             board.move(this.on_hand, to);
             this.dropHand();
