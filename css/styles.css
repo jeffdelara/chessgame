@@ -40,13 +40,13 @@ main {
     align-items: center;
 }
 
-#promo-modal {
+#promo-modal, #message-modal {
     background-color: white;
     font-size: 4vw;
     text-align: center;
 }
 
-#promo-modal h2 {
+#promo-modal h2, #message-modal h2 {
     font-size: 1rem;
     line-height: 2rem;
     padding: .3rem .8rem;
@@ -56,6 +56,10 @@ main {
     text-transform: uppercase;
     border-radius: .4rem;
     text-align: center;
+}
+
+#message-modal {
+    font-size: 1rem;
 }
 
 #hud {
@@ -158,7 +162,7 @@ main {
     font-size: 2.2vw;
 }
 
-#promo-modal {
+#promo-modal, #message-modal {
     position: absolute;
     top: calc(50% - 150px);
     left: calc(50%);
@@ -168,6 +172,11 @@ main {
     border-radius: .5rem;
     transition: .3s;
     visibility: hidden;
+}
+
+#message-modal {
+    width: 400px;
+    left: calc(50% - 50px);
 }
 
 .hide {
