@@ -21,7 +21,7 @@ class Player
     stopTime()
     {
         clearInterval(this.timer);
-        console.log("time stopped");
+        // console.log("time stopped");
     }
 
     resetTime()
@@ -58,6 +58,33 @@ class Player
         this.isChecked = true;
         this.checked_by = enemy_piece;
         this.getKing().isChecked = true;
+    }
+
+    getEnemyPieces(game_pieces)
+    {
+        let enemies = [];
+
+        for(let piece of game_pieces)
+        {
+            if(piece.team === this.team)
+            {
+                enemies.push(piece);
+            }
+        }
+        return enemies;
+    }
+
+    searchEnemyPiece(game_pieces, row, col) 
+    {
+        for(let enemy of game_pieces)
+        {
+            if(enemy.row === row && enemy.col === col)
+            {
+                return enemy;
+            }
+        }
+
+        return false;
     }
 
     setTime(time_in_seconds)
@@ -166,7 +193,7 @@ class Player
     canBlockChecker()
     {
         const checker = this.searchCheckOrigin();
-        console.log(checker);
+        // console.log(checker);
         if(checker)
         {
             for(let check_move of checker.moves) 
@@ -177,7 +204,6 @@ class Player
                     {
                         if(my_piece_moveset[0] === check_move[0] && my_piece_moveset[1] === check_move[1])
                         {
-                            console.log(my_piece.face, my_piece_moveset[0], my_piece_moveset[1], check_move[0], check_move[1]);
                             return true;
                         }
                     }
@@ -218,7 +244,6 @@ class Player
             const move = piece.move_set[i];
             if(move[0] === row && move[1] === col) return true;
         }
-        console.log("This move is not in moveset.");
         return false;
     }
 
@@ -326,7 +351,6 @@ class Player
             && piece.name === 'ROOK'
             && piece.col === 0)
             {
-                console.log("GET ROOK LEFT", piece);
                 return piece;
             }
         }
@@ -343,7 +367,6 @@ class Player
             && piece.name === 'ROOK' 
             && piece.col === 7)
             {
-                console.log("GET ROOK RIGHT", piece);
                 return piece;
             }
         }
@@ -359,7 +382,6 @@ class Player
 
         if(this.isSamePlace(to.row, to.col)) 
         {
-            console.log("This is same");
             this.cancelMove();
             return { message: "cancel" };
         }
@@ -377,7 +399,6 @@ class Player
             const my_piece = this.searchPieceByCoordinates(to.row, to.col);
             if(my_piece)
             {
-                console.log("Tile occupied by ally.");
                 return {message: "fail"}
             }
 
@@ -387,14 +408,6 @@ class Player
                 board.move(this.on_hand, to);
                 this.dropHand();
                 return { message: "attack" };
-            }
-
-            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
-            {
-                console.log("Pawn is at end. Promote the pawn.");
-                board.move(this.on_hand, to);
-                this.dropHand();
-                return {message: "promote"};
             }
 
             if(this.on_hand.name === 'KING' 
@@ -431,6 +444,48 @@ class Player
             }
 
             if(this.on_hand.name === 'KING' || this.on_hand.name === 'ROOK') this.on_hand.hasMoved();
+
+            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
+            {
+                console.log("Pawn is at end. Promote the pawn.");
+                board.move(this.on_hand, to);
+                this.dropHand();
+                return {message: "promote"};
+            }
+
+            if(this.on_hand.name === 'PAWN' 
+            && this.on_hand.en_passant_state === 0)
+            {
+                const pawn = this.on_hand;
+
+                if(pawn.col === to.col)
+                {
+                    const steps = Math.abs(to.row - pawn.row);
+                    
+                    if(steps === 2) 
+                    {
+                        pawn.setEnPassantState(pawn.en_passant_states.STEP);
+                    }
+
+                    if(steps === 1)
+                    {
+                        pawn.setEnPassantState(pawn.en_passant_states.DONE);
+                    }
+                }
+            }
+
+            if(this.on_hand.name === 'PAWN')
+            {
+                const pawn = this.on_hand;
+
+                if(pawn.isEnPassantMove(to.row, to.col))
+                {
+                    board.move(this.on_hand, to);
+                    this.dropHand();
+
+                    return { message: "en-passant", enemy: pawn.en_passant_object.enemy };
+                }
+            }
 
             board.move(this.on_hand, to);
             this.dropHand();
