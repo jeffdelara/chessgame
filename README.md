@@ -2,7 +2,8 @@
 
 A complete turn-based chess game created in HTML/CSS and vanilla Javascript. The game allows you to know available moves for your pieces. Helps you get out of checks by suggesting moves for King. It also automatically detects a `checkmate` when a couple of conditions are met. 
 
-<img src="images/screen.png" style="width: 400px">
+
+![Chess Game Screenshot](images/screen.png)
 *An example of a Queen making her move.*
 
 ## Current features:
