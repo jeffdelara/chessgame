@@ -4,35 +4,69 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <title>Document</title>
 </head>
 <body>
+
     <header>
         <div id="hud">
-            <h1 class="logo">Chess Game ♜</h1>
-            <div class="subtitle">TURN</div>
-            <div id="message"></div>
-            <div id="timerhud"><i class='bx bx-timer'></i> <span id="timer">30:00</span></div>
+            <div><h1 id="logo">Chess Game ♜</h1></div>
+            
+            <div id="turn">
+                <div class="subtitle">TURN</div>
+                <div id="message"></div>
+            </div>
+
             <div id="check" class="check"></div>
+            
+            <div id="timerhud">
+                <i class='bx bx-timer'></i> <span id="timer">30:00</span>
+            </div>
+
+            <div id="captured">
+                <h3>Captures</h3>
+                <span>White</span>
+                <div id="white" class="bench"></div>
+                <span>Black</span>
+                <div id="black" class="bench"></div>
+            </div>
+
+            <div id="instructions">
+                <h4>About</h4>
+                <p>This is a chess game with normal chess rules created in HTML/CSS and Javascript.</p>
+                <h4>Instructions</h4>
+                <p>To <b>move</b>, click on a piece. Then click on a tile to select or capture a piece.</p>
+                <p>Available moves will be marked in <span class="move">green</span>.</p>
+                <p><a class="btn" target="_blank" href="https://github.com/jeffdelara/chessgame"><i class='bx bxl-github'></i> Code on GitHub</a></p>
+
+                <p>&copy; 2021 Jeffrey de Lara</p>
+            </div>
         </div>
     </header>
 
     <!-- <div id="promo-modal">
-        <div><h2 id="promotion">promotion</h2></div>
-        <div id="promo-queen" class="promo-choice">♛</div>
-        <div id="promo-queen" class="promo-choice">♜</div>
-        <div id="promo-queen" class="promo-choice">♝</div>
-        <div id="promo-queen" class="promo-choice">♞</div>
-    </div> -->
+            <div id="promo-queen" class="promo-choice">♛</div>
+            <div id="promo-queen" class="promo-choice">♜</div>
+            <div id="promo-queen" class="promo-choice">♝</div>
+            <div id="promo-queen" class="promo-choice">♞</div>
+        </div> -->
 
     <main>
-        <div id="black" class="bench"></div>
         <div class="container">
         </div>
-        <div id="white" class="bench"></div>
     </main>
+
+    <div id="promo-modal">
+        <h2>promotion</h2>
+        <div class="promo-choices">
+            <div id="promo-queen" class="promo-choice">♛</div>
+            <div id="promo-rook" class="promo-choice">♜</div>
+            <div id="promo-bishop" class="promo-choice">♝</div>
+            <div id="promo-knight" class="promo-choice">♞</div>
+        </div>
+    </div>
 
     <script src="js/piece.js"></script>
     <script src="js/player.js"></script>
@@ -44,5 +78,6 @@
     <script src="js/queen.js"></script>
     <script src="js/king.js"></script>
     <script src="js/game.js"></script>
+    
 </body>
 </html>

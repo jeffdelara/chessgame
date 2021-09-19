@@ -193,7 +193,7 @@ class Player
     canBlockChecker()
     {
         const checker = this.searchCheckOrigin();
-        // console.log(checker);
+
         if(checker)
         {
             for(let check_move of checker.moves) 
@@ -402,14 +402,6 @@ class Player
                 return {message: "fail"}
             }
 
-            if(board.isAnAttack(this.on_hand, to))
-            {
-                console.log("This is an attack!!!");
-                board.move(this.on_hand, to);
-                this.dropHand();
-                return { message: "attack" };
-            }
-
             if(this.on_hand.name === 'KING' 
             && this.on_hand.isCastlingMoveValid(to.row, to.col)) 
             {
@@ -445,14 +437,6 @@ class Player
 
             if(this.on_hand.name === 'KING' || this.on_hand.name === 'ROOK') this.on_hand.hasMoved();
 
-            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
-            {
-                console.log("Pawn is at end. Promote the pawn.");
-                board.move(this.on_hand, to);
-                this.dropHand();
-                return {message: "promote"};
-            }
-
             if(this.on_hand.name === 'PAWN' 
             && this.on_hand.en_passant_state === 0)
             {
@@ -474,6 +458,7 @@ class Player
                 }
             }
 
+
             if(this.on_hand.name === 'PAWN')
             {
                 const pawn = this.on_hand;
@@ -485,6 +470,23 @@ class Player
 
                     return { message: "en-passant", enemy: pawn.en_passant_object.enemy };
                 }
+            }
+
+            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
+            {
+                console.log("Pawn is at end. Promote the pawn.");
+                board.move(this.on_hand, to);
+                this.dropHand();
+                return {message: "promote"};
+            }
+
+
+            if(board.isAnAttack(this.on_hand, to))
+            {
+                console.log("This is an attack!!!");
+                board.move(this.on_hand, to);
+                this.dropHand();
+                return { message: "attack" };
             }
 
             board.move(this.on_hand, to);

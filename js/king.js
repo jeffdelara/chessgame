@@ -162,26 +162,56 @@ class King extends Piece
         for(let i = 0; i < 8; i++)
         {            
             if(this.isOutOfBounds(this.row, this.col + i)) break;
-            if(this.isOutOfBounds(this.row, this.col - i)) break;
 
             const blocked_right = this.isBlockedForward(game_pieces, { row: this.row, col: this.col + i });
-            
-            if(blocked_right.type === 'ally' && 
-               blocked_right.piece.name === 'ROOK' && 
-               !blocked_right.piece.has_moved)
+            const right_col = this.col + i;
+
+            if(right_col === 7)
             {
-                blocked.right = false;
+                if(blocked_right.type === 'ally' && blocked_right.piece.name === 'ROOK' && !blocked_right.piece.has_moved)
+                {
+                    blocked.right = false;
+                    break;
+                }
             }
-
-            const blocked_left = this.isBlockedForward(game_pieces, {row: this.row, col: this.col - i});
-
-            if(blocked_left.type === 'ally' && 
-                blocked_left.piece.name === 'ROOK' && 
-               !blocked_left.piece.has_moved)
+            else 
             {
-                blocked.left = false;
+                if(blocked_right.type === 'enemy' || blocked_right.type === 'ally')
+                {
+                    blocked.right = true;
+                    break;
+                }
             }
         }
+
+        for(let i = 0; i < 8; i++)
+        {            
+            if(this.isOutOfBounds(this.row, this.col - i)) break;
+
+            const blocked_left = this.isBlockedForward(game_pieces, {row: this.row, col: this.col - i});
+            const left_col = this.col - i;
+            
+            if(left_col === 0)
+            {
+                if(blocked_left.type === 'ally' && blocked_left.piece.name === 'ROOK' && !blocked_left.piece.has_moved)
+                {
+                    console.log(this.face, blocked_left, this.row, this.col);
+                    blocked.left = false;
+                    break;
+                }
+            }
+
+            else 
+            {
+                if(blocked_left.type === 'enemy' || blocked_left.type === 'ally')
+                {
+                    blocked.left = true;
+                    break;
+                }
+            }
+        }
+
+        // console.log(blocked);
         return blocked;
     }
 

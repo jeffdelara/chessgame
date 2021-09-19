@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT:wght@400;700&display=swap');
+
+:root {
+    --black: #DDD;
+    --white: white;
+    --first-color: #1e3d59;
+    --second-color: #ff6e40;
+    --third-color: #ffc13b;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    grid-template-columns: 300px auto;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    color: var(--first-color);
+    font-family: 'Old Standard TT', serif;
+    background-color: #f5f0e1;
+}
+
+p {
+    margin: 0.8rem 0;
+}
+
+header {
+    padding: 1.3rem;
+    background-color: white;
+    text-align: center;
+}
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#promo-modal {
+    background-color: white;
+    font-size: 4vw;
+    text-align: center;
+}
+
+#promo-modal h2 {
+    font-size: 1rem;
+    line-height: 2rem;
+    padding: .3rem .8rem;
+    padding-top: .5rem;
+    background-color: rgba(255, 110, 64, .1);
+    color: rgb(255, 110, 64);
+    text-transform: uppercase;
+    border-radius: .4rem;
+    text-align: center;
+}
+
+#hud {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    flex: 1;
+}
+
+#hud div {
+    margin: .4rem 0;
+}
+
+#timerhud {
+    font-size: 1.8rem;
+    color: var(--second-color);
+}
+
+#message {
+    font-size: 2rem;
+}
+
+
+#hud #logo {
+    
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#chessboard {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    height: 51vw;
+    width: 51vw;
+    background-color: white;
+    box-shadow: 0px 0px 3px #AAA;
+}
+
+.black {
+    transition: .3s;
+    background-color: #EEE;
+}
+
+.tile {
+    font-size: 4vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.tile:hover {
+    transition: .3s;
+    font-size: 4.8vw;
+    cursor: pointer;
+    background-color: var(--second-color);
+}
+
+.origin {
+    background-color: var(--third-color);
+}
+
+.move {
+    transition: .3s;
+    background-color: rgba(0, 111, 0, .3) !important;
+}
+
+.move-black {
+    transition: .3s;
+    background-color: rgba(0, 111, 0, .4) !important;
+}
+
+.check {
+    text-transform: uppercase;
+    margin: 0;
+    background-color: rgba(222,49,99, 1);
+}
+
+#check {
+    display: none;
+    font-size: 1rem;
+    line-height: 2rem;
+    padding: .3rem .8rem;
+    padding-top: .5rem;
+    background-color: rgb(222,49,99, .1);
+    color: rgb(222,49,99) ;
+    margin: .8rem 0;
+    text-transform: uppercase;
+    border-radius: .4rem;
+    font-weight: bold;
+}
+
+#captured .bench {
+    font-size: 2.2vw;
+}
+
+#promo-modal {
+    position: absolute;
+    top: calc(50% - 150px);
+    left: calc(50%);
+    width: 300px;
+    padding: 1rem;
+    box-shadow: 0px 0px 5px #AAA;
+    border-radius: .5rem;
+    transition: .3s;
+    visibility: hidden;
+}
+
+.hide {
+    transform: translateY(-20px);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s linear;
+}
+
+.show {
+    transform: translateY(10px);
+    visibility: visible !important;
+    opacity: 1;
+}
+
+#promo-modal .promo-choices {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promo-choice {
+    padding: 1rem;
+    margin-top: .5rem;
+}
+
+.promo-choice:hover {
+    border-radius: 3px;
+    cursor: pointer;
+    background-color: #EEE;
+}
+
+h3 {
+    font-size: 1.3rem;
+    margin: .5rem;
+}
+
+h4 {
+    font-size: 1.2rem;
+}
+
+#instructions {
+    align-self: flex-end !important;
+}
+
+a.btn {
+    text-decoration: none;
+    font-weight: bold;
+    color: var(--first-color);
+    display: block;
+    border-radius: 3px;
+    border: 2px solid var(--first-color);
+    padding: .5rem 1rem;
+    display: block;
+}
+
+a.btn:hover {
+    background-color: var(--first-color);
+    transition: .3s;
+    color: white;
+}
