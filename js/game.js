@@ -287,8 +287,14 @@ class Game
         this.setHUDMessage(`${winner.team} wins!`);
     }
 
-    showModal() {}
-    closeModal() {}
+    showModal() 
+    {
+        document.querySelector("#promo-modal").setAttribute('class', 'show');
+    }
+    hideModal() 
+    {
+        document.querySelector("#promo-modal").setAttribute('class', 'hide');
+    }
 
     start()
     {
@@ -486,7 +492,8 @@ class Game
     {
         console.log("Code for promoting pawn");
         // show choices for promotion
-        // change state to this.STATE.PLAYER_PROMOTION
+        this.showModal();
+        this.current_state = this.STATE.PLAYER_PROMOTION; 
     }
 
     displayHUD()
