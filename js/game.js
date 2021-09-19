@@ -217,12 +217,10 @@ class Game
                 if(pawn.en_passant_state === pawn.en_passant_states.ENEMY_CHANCE)
                 {
                     pawn.setEnPassantState(pawn.en_passant_states.DONE);
-                    console.log(this.current_player.team);
                 }
 
                 if(pawn.en_passant_state === pawn.en_passant_states.STEP)
                 {
-                    console.log("Pawn on" , pawn.row, pawn.col, "possible en passant.");
                     pawn.setEnPassantState(pawn.en_passant_states.ENEMY_CHANCE);
                 }
             }
@@ -304,7 +302,6 @@ class Game
         this.setUpClickEvent();
         this.current_player = this.startTurn();
         this.current_player.startTime();
-        console.log("Player turn: ", this.current_player.team);
         this.displayHUD();
     }
 
@@ -613,7 +610,6 @@ class Game
         }
 
         // update and render
-        console.log("Player turn:", this.current_player.team);
         this.message = this.current_player.team;
         this.displayHUD();
         this.updateBoard();

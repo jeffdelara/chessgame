@@ -21,7 +21,7 @@ class Player
     stopTime()
     {
         clearInterval(this.timer);
-        console.log("time stopped");
+        // console.log("time stopped");
     }
 
     resetTime()
@@ -193,7 +193,7 @@ class Player
     canBlockChecker()
     {
         const checker = this.searchCheckOrigin();
-        console.log(checker);
+        // console.log(checker);
         if(checker)
         {
             for(let check_move of checker.moves) 
@@ -204,7 +204,6 @@ class Player
                     {
                         if(my_piece_moveset[0] === check_move[0] && my_piece_moveset[1] === check_move[1])
                         {
-                            console.log(my_piece.face, my_piece_moveset[0], my_piece_moveset[1], check_move[0], check_move[1]);
                             return true;
                         }
                     }
@@ -245,7 +244,6 @@ class Player
             const move = piece.move_set[i];
             if(move[0] === row && move[1] === col) return true;
         }
-        console.log("This move is not in moveset.");
         return false;
     }
 
@@ -353,7 +351,6 @@ class Player
             && piece.name === 'ROOK'
             && piece.col === 0)
             {
-                console.log("GET ROOK LEFT", piece);
                 return piece;
             }
         }
@@ -370,7 +367,6 @@ class Player
             && piece.name === 'ROOK' 
             && piece.col === 7)
             {
-                console.log("GET ROOK RIGHT", piece);
                 return piece;
             }
         }
@@ -386,7 +382,6 @@ class Player
 
         if(this.isSamePlace(to.row, to.col)) 
         {
-            console.log("This is same");
             this.cancelMove();
             return { message: "cancel" };
         }
@@ -404,7 +399,6 @@ class Player
             const my_piece = this.searchPieceByCoordinates(to.row, to.col);
             if(my_piece)
             {
-                console.log("Tile occupied by ally.");
                 return {message: "fail"}
             }
 
@@ -483,7 +477,7 @@ class Player
             if(this.on_hand.name === 'PAWN')
             {
                 const pawn = this.on_hand;
-                
+
                 if(pawn.isEnPassantMove(to.row, to.col))
                 {
                     board.move(this.on_hand, to);
