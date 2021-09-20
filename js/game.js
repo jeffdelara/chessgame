@@ -21,6 +21,14 @@ class Game
 
         this.message = "WHITE";
         this.pawn_promotion = {row: null, col: null}
+
+        this.container_lambda = function(event){
+            this.clickEventHandler(event);
+        }.bind(this);
+
+        this.promo_lambda = function(event){
+            this.promotionHandler(event);
+        }.bind(this);
     }
 
     startTurn()
@@ -313,14 +321,16 @@ class Game
     setUpClickEvent()
     {
         const container = document.querySelector('.container');
-        container.addEventListener('click', function(event){
-            this.clickEventHandler(event);
-        }.bind(this), false);
+        container.addEventListener('click', this.container_lambda, false);
 
         const promotion_modal = document.querySelector('.promo-choices');
-        promotion_modal.addEventListener('click', function(event){
-            this.promotionHandler(event);
-        }.bind(this), false);
+        promotion_modal.addEventListener('click', this.promo_lambda, false);
+    }
+
+    removeClicks() 
+    {
+        document.querySelector('.container').removeEventListener('click', this.container_lambda);
+        document.querySelector('.promo-choices').removeEventListener('click', this.promo_lambda);
     }
 
     setHUDMessage(message)
@@ -337,6 +347,8 @@ class Game
         console.log("GAME OVER");
         this.current_state = this.STATE.QUIT;
         this.setHUDMessage(`${winner.team} wins!`);
+        this.removeClicks();
+        document.querySelector("#restart").setAttribute('class', 'show');
     }
 
     showMessageModal(title, message)
@@ -388,15 +400,28 @@ class Game
         document.querySelector("#promo-modal").setAttribute('class', 'hide');
     }
 
-    start()
+    showStartButton()
+    {
+        document.querySelector("#start").setAttribute('class', 'show')
+    }
+
+    hideStartButton()
+    {
+        const start = document.querySelector("#start");
+        start.setAttribute('class', 'hide');
+    }
+
+    init()
     {
         this.createPlayers();
         this.createPiecesForPlayers();
-
-        
         this.updateBoard();
         this.renderBoard();
+    }
 
+    start()
+    {
+        this.hideStartButton();
         this.setUpClickEvent();
         this.current_player = this.startTurn();
         this.current_player.startTime();
@@ -727,6 +752,3 @@ class Game
         this.renderBoard();
     }
 }
-
-let game = new Game();
-game.start();
