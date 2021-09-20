@@ -4,6 +4,8 @@
 
 A complete turn-based chess game created in HTML/CSS and vanilla Javascript. The game allows you to know available moves for your pieces. Helps you get out of checks by suggesting moves for King. It also automatically detects a `checkmate` when a couple of conditions are met. 
 
+**[Live Demo](https://chessgame-jeffdelara.netlify.app/)**
+
 ## Chess Game Design
 The game has 4 main pieces of classes:
 + Board - handles the rendering of the chessboard and keeping track of the player pieces.
@@ -18,8 +20,8 @@ The game has 4 main pieces of classes:
 - Check / Checkmates
 - Timer for each player and countdown
 - Game automatically ends after the detection of a `Checkmate`
-- Castling
-- En passant
+- Castling - King can short and long castle on both sides if conditions are met.
+- En passant - pawn can capture an adjacent pawn if the enemy pawn moved 2 steps from starting position.
 - Pawn promotion - when a pawn reaches the end of the board, they will be allowed to choose a new piece as replacement
 
 ## Detecting a way to survive
@@ -33,7 +35,4 @@ When a `King` is checked, the game will look for possible ways to get out of a c
 - Queen 
 - King
 
-## Todo:
-Here is a list of items that is still needed to be done.
-- Start stop restart buttons
-- Deploy live
+Try the [Live Demo](https://chessgame-jeffdelara.netlify.app/)
