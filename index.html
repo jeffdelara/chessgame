@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <title>Chess Game by Jeff de Lara</title>
 </head>
-<body>
+<body onload="init()">
 
     <header>
         <div id="hud">
@@ -62,6 +62,16 @@
         <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Aspernatur nam illum esse, minima voluptas at labore assumenda, quia sit praesentium architecto velit laudantium asperiores. Laudantium quod corrupti repudiandae ipsam ducimus?</p> -->
     </div>
 
+    <div id="start">
+        <h3>Play some Chess?</h3>
+        <a href="#" class="btn" onclick="start(event)">Start Game</a>
+    </div>
+
+    <div id="restart">
+        <h3>Play again?</h3>
+        <a href="#" class="btn" onclick="restart(event)">Restart</a>
+    </div>
+
     <script src="js/piece.js"></script>
     <script src="js/player.js"></script>
     <script src="js/board.js"></script>
@@ -73,5 +83,29 @@
     <script src="js/king.js"></script>
     <script src="js/game.js"></script>
     
+
+    <script>
+
+        let game = null;
+
+        function init()
+        {
+            game = new Game();
+            game.init();
+        }
+
+        function start(event)
+        {
+            game.start();
+        }
+
+        function restart(event)
+        {
+            init();
+            start();
+            document.querySelector('#restart').setAttribute('class', 'hide');
+        }
+
+    </script>
 </body>
 </html>

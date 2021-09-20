@@ -11,6 +11,16 @@ class Player
         this.time_remaining = 60 * 30;
     }
 
+    // refreshPieces()
+    // {
+    //     this.pieces = [];
+    //     this.on_hand = null;
+    //     this.captures = [];
+    //     this.isChecked = false;
+    //     this.checked_by = null;
+    //     this.time_remaining = 60 * 30;
+    // }
+
     startTime() {
         this.showTime("#timer");
         this.timer = setInterval(function(){
