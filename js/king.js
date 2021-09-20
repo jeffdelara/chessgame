@@ -155,63 +155,46 @@ class King extends Piece
     isCastlingBlocked(game_pieces)
     {
         let blocked = {
-            right: true,
-            left: true
+            right: false,
+            left: false
         };
 
-        for(let i = 0; i < 8; i++)
-        {            
-            if(this.isOutOfBounds(this.row, this.col + i)) break;
+        for(let i = this.col - 1; i >= 0; i--)
+        {
+            if(this.isOutOfBounds(this.row, i)) break;
 
-            const blocked_right = this.isBlockedForward(game_pieces, { row: this.row, col: this.col + i });
-            const right_col = this.col + i;
-
-            if(right_col === 7)
+            const blocked_left = this.isBlockedForward(game_pieces, {row: this.row, col: i});
+            
+            if(blocked_left) 
             {
-                if(blocked_right.type === 'ally' && blocked_right.piece.name === 'ROOK' && !blocked_right.piece.has_moved)
+                if(blocked_left.piece.name === 'ROOK' && i === 0 && !blocked_left.piece.has_moved && blocked_left.type === 'ally') 
+                {
+                    blocked.left = false;
+                    break;
+                }
+
+                blocked.left = true;
+                break;
+            }
+        }
+
+        for(let i = this.col + 1; i <= 7; i++)
+        {
+            const blocked_right = this.isBlockedForward(game_pieces, {row: this.row, col: i});
+
+            if(blocked_right)
+            {
+                if(blocked_right.piece.name === 'ROOK' && i === 7 && !blocked_right.piece.has_moved && blocked_right.type === 'ally')
                 {
                     blocked.right = false;
                     break;
                 }
-            }
-            else 
-            {
-                if(blocked_right.type === 'enemy' || blocked_right.type === 'ally')
-                {
-                    blocked.right = true;
-                    break;
-                }
+
+                blocked.right = true;
+                break;
             }
         }
 
-        for(let i = 0; i < 8; i++)
-        {            
-            if(this.isOutOfBounds(this.row, this.col - i)) break;
-
-            const blocked_left = this.isBlockedForward(game_pieces, {row: this.row, col: this.col - i});
-            const left_col = this.col - i;
-            
-            if(left_col === 0)
-            {
-                if(blocked_left.type === 'ally' && blocked_left.piece.name === 'ROOK' && !blocked_left.piece.has_moved)
-                {
-                    console.log(this.face, blocked_left, this.row, this.col);
-                    blocked.left = false;
-                    break;
-                }
-            }
-
-            else 
-            {
-                if(blocked_left.type === 'enemy' || blocked_left.type === 'ally')
-                {
-                    blocked.left = true;
-                    break;
-                }
-            }
-        }
-
-        // console.log(blocked);
         return blocked;
     }
 
@@ -319,19 +302,17 @@ class King extends Piece
 
         // tiles must not be blocked 
         const blocked = this.isCastlingBlocked(game_pieces);
-        if(blocked.left && blocked.right) return false;
-        
+
         // tiles must not be attacked 
         const castling_clearance = this.isCastlingTileFreeFromAttack(game_pieces);
 
-        // castling coordinates
-        if(castling_clearance.left)
+        if(!blocked.left && castling_clearance.left)
         {
             const castling_left = [ this.row, this.col - 2 ];
             this.addCastlingMove(castling_left);
         }
 
-        if(castling_clearance.right)
+        if(!blocked.right && castling_clearance.right)
         {
             const castling_right = [ this.row, this.col + 2 ];
             this.addCastlingMove(castling_right);
