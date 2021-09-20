@@ -99,8 +99,10 @@ main {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
-    height: 51vw;
-    width: 51vw;
+    height: 52vw;
+    width: 52vw;
+    max-width: 100vh;
+    max-height: 100vh;
     background-color: white;
     box-shadow: 0px 0px 3px #AAA;
 }
@@ -115,6 +117,7 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: font-size 0s, background-color 0.5s linear;
 }
 
 .tile:hover {
@@ -237,4 +240,17 @@ a.btn:hover {
     background-color: var(--first-color);
     transition: .3s;
     color: white;
+}
+
+@media (min-width: 1600px) {
+    .tile {
+        font-size: 4.4rem;
+    }
+
+    .tile:hover {
+        font-size: 4.8rem;
+        cursor: pointer;
+        background-color: var(--second-color);
+        transition: font-size 0s, background-color 0.5s linear;
+    }
 }
