@@ -233,6 +233,19 @@ class Player
         return false;
     }
 
+    removePiece(row, col)
+    {
+        for (let i = 0; i < this.pieces.length; i++) {
+            const playing_piece = this.pieces[i];
+            if(row === playing_piece.row && col === playing_piece.col)
+            {
+                this.pieces.splice(i, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
     capture(piece)
     {  
         this.captures.push(piece);
@@ -467,34 +480,49 @@ class Player
                 {
                     board.move(this.on_hand, to);
                     this.dropHand();
-
                     return { message: "en-passant", enemy: pawn.en_passant_object.enemy };
                 }
+                
             }
 
-            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row)
-            {
-                console.log("Pawn is at end. Promote the pawn.");
-                board.move(this.on_hand, to);
-                this.dropHand();
-                return {message: "promote"};
-            }
-
-
+            
             if(board.isAnAttack(this.on_hand, to))
             {
                 console.log("This is an attack!!!");
                 board.move(this.on_hand, to);
+
+                const result = this.checkForPawnPromotion(to, board);
+                if(result) return {message: "promote-attack"};
+
                 this.dropHand();
                 return { message: "attack" };
             }
 
             board.move(this.on_hand, to);
+            
+            const result = this.checkForPawnPromotion(to, board);
+            if(result) return {message: "promote-move"};
+            
             this.dropHand();
             return { message: "success" };
         }
 
         return { message: "fail" };
+    }
+
+    checkForPawnPromotion(to, board)
+    {
+        if(this.on_hand.name === 'PAWN')
+        {
+            if(board.isPawnAtEnd(this.on_hand, to) && this.on_hand.end_row === this.on_hand.row)
+            {
+                console.log("Pawn is at end. Promote the pawn.");
+                this.dropHand();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     doPlayerOwnPiece(piece)

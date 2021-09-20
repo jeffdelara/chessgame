@@ -20,6 +20,7 @@ class Game
         this.click_col = null;
 
         this.message = "WHITE";
+        this.pawn_promotion = {row: null, col: null}
     }
 
     startTurn()
@@ -138,19 +139,19 @@ class Game
         // let white = this.players[0];
         // let black = this.players[1];
 
-        // white.pieces.push(new Pawn(6, 4, 'white'));
+        // white.pieces.push(new Pawn(4, 4, 'white'));
         // white.pieces.push(new King(7, 4, 'white'));
-        // white.pieces.push(new Pawn(7, 7, 'white'));
-        // white.pieces.push(new Pawn(7, 0, 'white'));
-        // white.pieces.push(new Pawn(6, 5, 'white'));
-        // white.pieces.push(new Pawn(6, 6, 'white'));
-        // white.pieces.push(new Pawn(6, 3, 'white'));
+        // white.pieces.push(new Pawn(4, 7, 'white'));
+        // white.pieces.push(new Pawn(3, 0, 'white'));
+        // white.pieces.push(new Pawn(5, 5, 'white'));
+        // white.pieces.push(new Pawn(3, 6, 'white'));
+        // white.pieces.push(new Pawn(4, 3, 'white'));
         // white.pieces.push(new Knight(6, 2, 'white'));
 
         // black.pieces.push(new King(0, 4, 'black'));
         // black.pieces.push(new Pawn(0, 0, 'black'));
         // black.pieces.push(new Pawn(2, 1, 'black'));
-        // black.pieces.push(new Pawn(0, 7, 'black'));
+        // black.pieces.push(new Rook(0, 7, 'black'));
         // black.pieces.push(new Pawn(3, 4, 'black'));
     }
 
@@ -263,11 +264,62 @@ class Game
 
     }
 
+    promotionHandler(event)
+    {
+        const id = event.target.dataset.id;
+        const player = this.current_player;
+        const to = this.pawn_promotion;
+        
+        console.log(id);
+
+        switch (id) {
+            case 'queen':
+                // remove pawn
+                player.removePiece(to.row, to.col);
+                player.pieces.push(new Queen(to.row, to.col, player.team));
+                break;
+
+            case 'rook':
+                player.removePiece(to.row, to.col);
+                player.pieces.push(new Rook(to.row, to.col, player.team));
+                break;
+            
+            case 'bishop':
+                player.removePiece(to.row, to.col);
+                player.pieces.push(new Bishop(to.row, to.col, player.team));
+                break;
+
+            case 'knight':
+                player.removePiece(to.row, to.col);
+                player.pieces.push(new Knight(to.row, to.col, player.team));
+                break;
+        
+            default:
+                break;
+        }
+
+        this.hidePawnModal();
+        this.endTurn();
+
+        // update and render
+        this.message = this.current_player.team;
+        this.displayHUD();
+        this.updateBoard();
+        this.checkIfChecked();
+        this.displayCaptures();
+        this.renderBoard();
+    }
+
     setUpClickEvent()
     {
         const container = document.querySelector('.container');
         container.addEventListener('click', function(event){
             this.clickEventHandler(event);
+        }.bind(this), false);
+
+        const promotion_modal = document.querySelector('.promo-choices');
+        promotion_modal.addEventListener('click', function(event){
+            this.promotionHandler(event);
         }.bind(this), false);
     }
 
@@ -287,11 +339,51 @@ class Game
         this.setHUDMessage(`${winner.team} wins!`);
     }
 
-    showModal() 
+    showMessageModal(title, message)
     {
+        const _title = document.createElement('h2');
+        _title.innerHTML = title;
+        const _message = document.createElement('p');
+        _message.innerHTML = message; 
+
+        const modal = document.querySelector("#message-modal");
+        console.log(modal);
+        modal.appendChild(_title);
+        modal.appendChild(_message);
+        modal.setAttribute('class', 'show');
+    }
+
+    hideMessageModal()
+    {
+        document.querySelector("#message-modal").setAttribute('class', 'hide');
+    }
+
+    showPawnModal() 
+    {
+        const faces = {
+            WHITE: ['♕', '♖', '♗', '♘'], 
+            BLACK: ['♛', '♜', '♝', '♞'], 
+            names: ['queen', 'rook', 'bishop', 'knight']
+        };
+
+        const team = this.current_player.team; 
+
+        const choices = document.querySelector('.promo-choices');
+        choices.innerHTML = "";
+
+        for(let i = 0; i < faces.names.length; i++)
+        {
+            const div = document.createElement('div');
+            div.setAttribute('id', `promo-${faces.names[i]}`);
+            div.setAttribute('data-id', faces.names[i]);
+            div.setAttribute('class', 'promo-choice');
+            div.innerHTML = faces[team][i];
+            choices.appendChild(div);
+        }
+
         document.querySelector("#promo-modal").setAttribute('class', 'show');
     }
-    hideModal() 
+    hidePawnModal() 
     {
         document.querySelector("#promo-modal").setAttribute('class', 'hide');
     }
@@ -490,9 +582,11 @@ class Game
 
     promotePawn(row, col)
     {
+        
         console.log("Code for promoting pawn");
+        this.pawn_promotion = {row: row, col: col};
         // show choices for promotion
-        this.showModal();
+        this.showPawnModal();
         this.current_state = this.STATE.PLAYER_PROMOTION; 
     }
 
@@ -570,7 +664,14 @@ class Game
                 this.playerTurn();
                 break;
 
-            case 'promote':
+            case 'promote-move':
+                console.log('Promote');
+                this.promotePawn(row, col);
+                break;
+
+            case 'promote-attack':
+                console.log('Promote with attack');
+                this.captureEnemyPiece(row, col);
                 this.promotePawn(row, col);
                 break;
 
@@ -606,6 +707,7 @@ class Game
 
             case this.STATE.PLAYER_PROMOTION:
                 // awaiting choice queen, rook, bishop, knight
+                console.log("Showing choices.");
                 break;
 
             case this.STATE.QUIT:
