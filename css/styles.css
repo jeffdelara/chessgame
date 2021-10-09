@@ -147,6 +147,19 @@ main {
     background-color: rgba(222,49,99, 1);
 }
 
+.notif {
+    font-size: 1rem;
+    line-height: 2rem;
+    padding: .3rem .8rem;
+    padding-top: .5rem;
+    background-color: rgb(222,49,99, .1);
+    color: rgb(222,49,99) ;
+    margin: .8rem 0;
+    text-transform: uppercase;
+    border-radius: .4rem;
+    font-weight: bold;
+}
+
 #check {
     display: none;
     font-size: 1rem;

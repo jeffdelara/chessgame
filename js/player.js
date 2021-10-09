@@ -397,6 +397,11 @@ class Player
         return false;
     }
 
+    previousMove(to, board)
+    {
+        board.move(this.on_hand, to);
+    }
+
     // piece object 
     // board object
     // to object ({row: "", col: ""})
@@ -454,7 +459,7 @@ class Player
                 this.on_hand.hasMoved();
                 rook.hasMoved();
 
-                this.dropHand();
+                // this.dropHand();
                 return { message: "castling" };
             }
 
@@ -489,7 +494,7 @@ class Player
                 if(pawn.isEnPassantMove(to.row, to.col))
                 {
                     board.move(this.on_hand, to);
-                    this.dropHand();
+                    // this.dropHand();
                     return { message: "en-passant", enemy: pawn.en_passant_object.enemy };
                 }
                 
@@ -504,7 +509,7 @@ class Player
                 const result = this.checkForPawnPromotion(to, board);
                 if(result) return {message: "promote-attack"};
 
-                this.dropHand();
+                // this.dropHand();
                 return { message: "attack" };
             }
 
@@ -513,7 +518,7 @@ class Player
             const result = this.checkForPawnPromotion(to, board);
             if(result) return {message: "promote-move"};
             
-            this.dropHand();
+            // this.dropHand();
             return { message: "success" };
         }
 

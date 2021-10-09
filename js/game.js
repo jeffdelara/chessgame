@@ -505,6 +505,39 @@ class Game
         check.style.display = "none";
     }
 
+    isDiscoveredCheck()
+    {
+        const enemy = this.players[(this.turn+1) % 2];
+        const previous_player = this.players[(this.turn) % 2];
+
+        const enemy_check = enemy.isCheckedBy(previous_player);
+        const player_check = previous_player.isCheckedBy(enemy);
+
+        const players = [enemy, previous_player];
+        const checks = [enemy_check, player_check];
+
+        for(let i = 0; i < players.length; i++)
+        {
+            let player = players[i];
+            let check = checks[i];
+
+            const king = player.getKing();
+
+            if(!king) 
+            {
+                this.showCheckHUD("King is captured!");
+                this.endGame(previous_player);
+                break;
+            }
+
+            if(check)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     checkIfChecked()
     {
         const enemy = this.players[(this.turn+1) % 2];
@@ -532,7 +565,6 @@ class Game
 
             if(check)
             {
-
                 console.log("CHECK!");
                 this.showCheckHUD("CHECK!");
                 if(this.isCheckMate(player)) 
@@ -550,7 +582,6 @@ class Game
             this.hideCheckHUD();
             this.unsetCheckedTile();
         }
-
     }
 
     captureEnemyPiece(row, col)
@@ -657,15 +688,38 @@ class Game
         const row = this.clicked_row;
         const col = this.click_col;
         const player = this.current_player;
-
+        
+        const originCoor = { row: player.on_hand.row, col: player.on_hand.col }
         const result = player.move({row, col}, this.board);
 
+        this.updateBoard();
+
+        const isDiscoveredCheck = this.isDiscoveredCheck();
+
+        if(isDiscoveredCheck)
+        {
+            player.previousMove(originCoor, this.board);
+            result.message = 'discovered-check';
+            
+            const notif = document.querySelector('#notif');
+            notif.classList.add('notif');
+            notif.innerHTML = 'Discovered check';
+
+            setTimeout(function(){
+                notif.innerHTML = '';
+                notif.classList.remove('notif');
+            }, 3000);
+        }
+        
         switch (result.message) {
+            
             case 'success':
+                player.dropHand();
                 this.endTurn();
                 break;
 
             case 'en-passant':
+                player.dropHand();
                 console.log(result.message);
                 const enemy = result.enemy;
                 this.captureEnemyPiece(enemy.row, enemy.col);
@@ -678,24 +732,31 @@ class Game
                 this.endTurn();
                 break;
 
+            case 'discovered-check':
+                console.log('discovered-check');
+
             case 'cancel':
                 console.log("Move cancelled.");
+                player.dropHand();
                 this.refreshTurn();
                 break;
             
             case 'new-pick':
                 console.log("New Pick.");
+                player.dropHand();
                 this.refreshTurn();
                 this.playerTurn();
                 break;
 
             case 'promote-move':
                 console.log('Promote');
+                player.dropHand();
                 this.promotePawn(row, col);
                 break;
 
             case 'promote-attack':
                 console.log('Promote with attack');
+                player.dropHand();
                 this.captureEnemyPiece(row, col);
                 this.promotePawn(row, col);
                 break;
@@ -704,6 +765,7 @@ class Game
                 break;
 
             case 'attack':
+                player.dropHand();
                 this.captureEnemyPiece(row, col);
                 this.endTurn();
                 break;
