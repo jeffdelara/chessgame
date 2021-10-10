@@ -528,7 +528,7 @@ class Game
         const enemy = this.players[(this.turn) % 2];
 
         const player_check = previous_player.isCheckedBy(enemy);
-        console.log(player_check, previous_player.checked_by);
+        
         if(player_check)
         {
             return { result: true, checkedBy: previous_player.checked_by };
@@ -688,13 +688,13 @@ class Game
         const player = this.current_player;
         
         const originCoor = { row: player.on_hand.row, col: player.on_hand.col }
-        let result = player.move({row, col}, this.board);
+        let result = player.move({row, col}, this.board, game);
 
         // projecting if move will not result in discovered check
         this.updateMoveSet();
         const isDiscoveredCheck = this.isDiscoveredCheck();
-
-        if(isDiscoveredCheck)
+        
+        if(isDiscoveredCheck && result.message !== 'cancel' && result.message !== 'new-pick')
         {
             // if capturing discovered checking piece
             const checkingPiece = isDiscoveredCheck.checkedBy;
@@ -742,6 +742,14 @@ class Game
 
             case 'discovered-check':
                 console.log('discovered-check');
+                const notif = document.querySelector('#notif');
+                notif.classList.add('notif');
+                notif.innerHTML = 'Discovered check';
+
+                setTimeout(function(){
+                    notif.innerHTML = '';
+                    notif.classList.remove('notif');
+                }, 3000);
 
             case 'cancel':
                 console.log("Move cancelled.");
