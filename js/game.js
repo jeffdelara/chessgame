@@ -524,33 +524,14 @@ class Game
 
     isDiscoveredCheck()
     {
-        const enemy = this.players[(this.turn+1) % 2];
-        const previous_player = this.players[(this.turn) % 2];
+        const previous_player = this.players[(this.turn+1) % 2];
+        const enemy = this.players[(this.turn) % 2];
 
-        const enemy_check = enemy.isCheckedBy(previous_player);
         const player_check = previous_player.isCheckedBy(enemy);
-
-        const players = [enemy, previous_player];
-        const checks = [enemy_check, player_check];
-
-        for(let i = 0; i < players.length; i++)
+        console.log(player_check, previous_player.checked_by);
+        if(player_check)
         {
-            let player = players[i];
-            let check = checks[i];
-
-            const king = player.getKing();
-
-            if(!king) 
-            {
-                this.showCheckHUD("King is captured!");
-                this.endGame(previous_player);
-                break;
-            }
-
-            if(check)
-            {
-                return true;
-            }
+            return { result: true, checkedBy: previous_player.checked_by };
         }
         return false;
     }
@@ -707,25 +688,35 @@ class Game
         const player = this.current_player;
         
         const originCoor = { row: player.on_hand.row, col: player.on_hand.col }
-        const result = player.move({row, col}, this.board);
+        let result = player.move({row, col}, this.board);
 
+        // projecting if move will not result in discovered check
         this.updateMoveSet();
-
         const isDiscoveredCheck = this.isDiscoveredCheck();
 
         if(isDiscoveredCheck)
         {
-            player.previousMove(originCoor, this.board);
-            result.message = 'discovered-check';
-            
-            const notif = document.querySelector('#notif');
-            notif.classList.add('notif');
-            notif.innerHTML = 'Discovered check';
+            // if capturing discovered checking piece
+            const checkingPiece = isDiscoveredCheck.checkedBy;
+            if(checkingPiece.row === row && checkingPiece.col === col)
+            {
+                result = player.move({row, col}, this.board);
+                result.message = 'attack';
+            }
+            else // revert move, give notification
+            {
+                player.previousMove(originCoor, this.board);
+                result.message = 'discovered-check';
+                
+                const notif = document.querySelector('#notif');
+                notif.classList.add('notif');
+                notif.innerHTML = 'Discovered check';
 
-            setTimeout(function(){
-                notif.innerHTML = '';
-                notif.classList.remove('notif');
-            }, 3000);
+                setTimeout(function(){
+                    notif.innerHTML = '';
+                    notif.classList.remove('notif');
+                }, 3000);
+            }
         }
         
         switch (result.message) {
