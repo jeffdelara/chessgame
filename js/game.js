@@ -242,6 +242,23 @@ class Game
         this.checkForEnPassant();
     }
 
+    updateMoveSet()
+    {
+        this.board.refreshBoard();
+        for (let i = 0; i < this.players.length; i++) {
+            const player = this.players[i];
+            
+            for(let j = 0; j < player.pieces.length; j++)
+            {
+                const piece = player.pieces[j];
+                piece.createMoveSet(this.getAllGamePiecesOnBoard());
+                
+                this.board.insert(piece);
+            }
+        }
+        this.createKingDangerTiles();
+    }
+
     updateBoard()
     {
 
@@ -692,7 +709,7 @@ class Game
         const originCoor = { row: player.on_hand.row, col: player.on_hand.col }
         const result = player.move({row, col}, this.board);
 
-        this.updateBoard();
+        this.updateMoveSet();
 
         const isDiscoveredCheck = this.isDiscoveredCheck();
 
