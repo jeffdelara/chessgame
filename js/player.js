@@ -405,7 +405,7 @@ class Player
     // piece object 
     // board object
     // to object ({row: "", col: ""})
-    move(to, board)
+    move(to, board, game = null)
     {
 
         if(this.isSamePlace(to.row, to.col)) 
