@@ -309,6 +309,7 @@ class King extends Piece
         if(!blocked.left && castling_clearance.left)
         {
             const castling_left = [ this.row, this.col - 2 ];
+            console.log('castling', castling_left);
             this.addCastlingMove(castling_left);
         }
 
