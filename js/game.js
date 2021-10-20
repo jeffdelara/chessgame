@@ -136,28 +136,28 @@ class Game
 
     createPiecesForPlayers()
     {
-        this.createPawns();
-        this.createRooks();
-        this.createKnights();
-        this.createBishops();
-        this.createQueens();
-        this.createKings();
+        // this.createPawns();
+        // this.createRooks();
+        // this.createKnights();
+        // this.createBishops();
+        // this.createQueens();
+        // this.createKings();
 
         // This part for testing purposes
-        // let white = this.players[0];
-        // let black = this.players[1];
+        let white = this.players[0];
+        let black = this.players[1];
 
         // white.pieces.push(new Pawn(4, 4, 'white'));
-        // white.pieces.push(new King(7, 4, 'white'));
-        // white.pieces.push(new Pawn(4, 7, 'white'));
-        // white.pieces.push(new Pawn(3, 0, 'white'));
+        white.pieces.push(new King(7, 4, 'white'));
+        white.pieces.push(new Queen(4, 5, 'white'));
+        white.pieces.push(new Pawn(4, 0, 'white'));
         // white.pieces.push(new Pawn(5, 5, 'white'));
         // white.pieces.push(new Pawn(3, 6, 'white'));
         // white.pieces.push(new Pawn(4, 3, 'white'));
         // white.pieces.push(new Knight(6, 2, 'white'));
 
-        // black.pieces.push(new King(0, 4, 'black'));
-        // black.pieces.push(new Pawn(0, 0, 'black'));
+        black.pieces.push(new King(1, 0, 'black'));
+        black.pieces.push(new Pawn(3, 0, 'black'));
         // black.pieces.push(new Pawn(2, 1, 'black'));
         // black.pieces.push(new Rook(0, 7, 'black'));
         // black.pieces.push(new Pawn(3, 4, 'black'));
@@ -177,6 +177,29 @@ class Game
     {
         const [row, col] = this.getCheckedTile();
         document.querySelector(`#r${row}c${col}`).classList.add('check');
+    }
+
+    checkForStalemate() 
+    {
+        console.log('Check for stalemate');
+        // get all current player's pieces
+        const player = this.current_player;
+        let hasMoves = false;
+        if(player) 
+        {
+            const playerPieces = player.pieces;
+            playerPieces.forEach(piece => {
+                if(piece.move_set.length > 0) {
+                    hasMoves = true;
+                }
+            });
+        }
+        
+        // check if each piece has a move
+        if(hasMoves === false && player) {
+            this.endInDraw();
+        }
+        // if no moves, can be stalemate
     }
 
     createKingDangerTiles()
@@ -240,6 +263,7 @@ class Game
     {
         this.createKingDangerTiles();
         this.checkForEnPassant();
+        this.checkForStalemate();
     }
 
     updateMoveSet()
@@ -354,6 +378,19 @@ class Game
     {
         this.message = message;
         this.displayHUD();
+    }
+
+    endInDraw()
+    {
+        this.players[0].stopTime();
+        this.players[1].stopTime();
+
+        console.log("GAME OVER");
+        this.current_state = this.STATE.QUIT;
+        this.setHUDMessage('Draw');
+        this.notify('Stalemate!');
+        this.removeClicks();
+        document.querySelector("#restart").setAttribute('class', 'show');
     }
 
     endGame(winner)
@@ -621,7 +658,7 @@ class Game
         for(let i = 0; i < move_set.length; i++)
         {
             const move = move_set[i];
-            
+            console.log(this.current_player.team, move);
             const id = `#r${move[0]}c${move[1]}`;
             const div = document.querySelector(id);
             
@@ -680,6 +717,18 @@ class Game
 
     }
 
+    notify(message, timer = 4) 
+    {
+        const notif = document.querySelector('#notif');
+        notif.classList.add('notif');
+        notif.innerHTML = message;
+
+        setTimeout(function(){
+            notif.innerHTML = '';
+            notif.classList.remove('notif');
+        }, timer * 1000);
+    }
+
     playerMoving()
     {
         // console.log("Is that the tile you want,", this.current_player.team);
@@ -708,14 +757,7 @@ class Game
                 player.previousMove(originCoor, this.board);
                 result.message = 'discovered-check';
                 
-                const notif = document.querySelector('#notif');
-                notif.classList.add('notif');
-                notif.innerHTML = 'Discovered check';
-
-                setTimeout(function(){
-                    notif.innerHTML = '';
-                    notif.classList.remove('notif');
-                }, 3000);
+                this.notify('Discovered Check');
             }
         }
         
