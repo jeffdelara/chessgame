@@ -18,11 +18,13 @@ The game has 4 main pieces of classes:
 - Movement and attack - units can move and capture other units.
 - Move suggestion - once you click on a piece, it will show available moves for the unit. This can be a great way for beginners to learn how to play chess. It also has suggestions for `King` to move in a safe place and avoid a `check`.
 - Check / Checkmates
+- Stalemate - results in a draw if there are no more moves
 - Timer for each player and countdown
 - Game automatically ends after the detection of a `Checkmate`
 - Castling - King can short and long castle on both sides if conditions are met.
 - En passant - pawn can capture an adjacent pawn if the enemy pawn moved 2 steps from starting position.
 - Pawn promotion - when a pawn reaches the end of the board, they will be allowed to choose a new piece as replacement
+- Discovered check - prevents movement of pieces if it will result in a discovered check.
 
 ## Detecting a way to survive
 When a `King` is checked, the game will look for possible ways to get out of a check and will suggest you some moves. For example, if a `King` can not move, it will look for its other pieces if its possible to block or capture a `checker`. Though, the suggestions can only be seen on the dev console.
