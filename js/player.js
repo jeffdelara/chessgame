@@ -546,4 +546,74 @@ class Player
         const isStillAlive = this.searchPiece(piece);
         return isSameTeam && isStillAlive;
     }
+
+    getPieceInOppositeDirection(direction, playerPiece, enemyPieces)
+    {
+        const adjust = {row: 0, col: 0};
+        let playerRow = playerPiece.row;
+        let playerCol = playerPiece.col; 
+
+        switch (direction) {
+            case 'left':
+                adjust.col = -1;
+                break;
+
+            case 'right':
+                adjust.col = 1;
+                break;
+
+            case 'up':
+                adjust.row = -1;
+                break;
+            case 'down':
+                adjust.row = 1;
+                break;
+
+            case 'up-left':
+                adjust.row = -1;
+                adjust.col = -1;
+                break;
+
+            case 'up-right':
+                adjust.row = -1;
+                adjust.col = 1;
+                break;
+
+            case 'down-left':
+                adjust.row = 1;
+                adjust.col = -1;
+                break;
+
+            case 'down-right':
+                adjust.row = 1;
+                adjust.col = 1;
+                break;
+
+            default:
+                break;
+        }
+
+        let pieceFound = false;
+        const movesTowardsEnemy = [];
+        while (playerRow >= 0 && playerRow <= 7 && playerCol >= 0 && playerCol <= 7 && pieceFound === false) 
+        {    
+            enemyPieces.forEach(enemyPiece => {
+                if(enemyPiece.name === 'QUEEN' || enemyPiece.name === 'BISHOP' || enemyPiece.name === 'ROOK') 
+                {
+                    movesTowardsEnemy.push([playerRow, playerCol]);
+                    if(enemyPiece.row === playerRow && enemyPiece.col === playerCol) 
+                    {
+                        // console.log('FOUND');
+                        // console.log(`${playerPiece.name} is looking at ${enemyPiece.name} on coor ${playerRow}, ${playerCol}`);
+                        // console.log(`Enemy coor: ${enemyPiece.row}, ${enemyPiece.col}`);
+                        pieceFound = {movesTowardsEnemy: movesTowardsEnemy, enemyPiece: enemyPiece};
+                    }
+                } 
+            });
+
+            playerRow += (adjust.row * -1);
+            playerCol += (adjust.col * -1);
+        }
+        return pieceFound;
+    }
 }

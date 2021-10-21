@@ -6,6 +6,7 @@ class Bishop extends Piece
         this.face = team.toUpperCase() === 'BLACK' ? '♝' : '♗';
         this.move_set = [];
         this.max_step = 8;
+        this.name = 'BISHOP';
     }
 
     createMoveSetWithDirection(direction, game_pieces)

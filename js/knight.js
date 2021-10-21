@@ -7,6 +7,7 @@ class Knight extends Piece
         this.move_set = [];
         this.forward = 2;
         this.flank = 1;
+        this.name = 'KNIGHT';
     }
 
     createMoveSetWithDirection(direction, game_pieces)

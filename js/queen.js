@@ -6,6 +6,7 @@ class Queen extends Piece
         this.face = team.toUpperCase() === 'BLACK' ? '♛' : '♕';
         this.move_set = [];
         this.max_step = 8;
+        this.name = 'QUEEN';
     }
 
     createMoveSetWithDirection(direction, game_pieces)
