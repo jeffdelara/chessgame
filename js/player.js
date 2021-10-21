@@ -598,7 +598,21 @@ class Player
         while (playerRow >= 0 && playerRow <= 7 && playerCol >= 0 && playerCol <= 7 && pieceFound === false) 
         {    
             enemyPieces.forEach(enemyPiece => {
-                if(enemyPiece.name === 'QUEEN' || enemyPiece.name === 'BISHOP' || enemyPiece.name === 'ROOK') 
+
+                // Queen and Rook
+                if((enemyPiece.name === 'QUEEN' || enemyPiece.name === 'ROOK') && 
+                   (direction === 'up' || direction === 'down' || direction === 'left' || direction === 'right')) 
+                {
+                    movesTowardsEnemy.push([playerRow, playerCol]);
+                    if(enemyPiece.row === playerRow && enemyPiece.col === playerCol) 
+                    {
+                        pieceFound = {movesTowardsEnemy: movesTowardsEnemy, enemyPiece: enemyPiece};
+                    }
+                }
+
+                // Bishop and Queen
+                if((enemyPiece.name === 'QUEEN' || enemyPiece.name === 'BISHOP') && 
+                   (direction === 'up-left' || direction === 'up-right' || direction === 'down-left' || direction === 'down-right')) 
                 {
                     movesTowardsEnemy.push([playerRow, playerCol]);
                     if(enemyPiece.row === playerRow && enemyPiece.col === playerCol) 
@@ -608,7 +622,7 @@ class Player
                         // console.log(`Enemy coor: ${enemyPiece.row}, ${enemyPiece.col}`);
                         pieceFound = {movesTowardsEnemy: movesTowardsEnemy, enemyPiece: enemyPiece};
                     }
-                } 
+                }
             });
 
             playerRow += (adjust.row * -1);
