@@ -148,17 +148,17 @@ class Game
         // let black = this.players[1];
 
         // white.pieces.push(new Pawn(4, 4, 'white'));
-        // white.pieces.push(new King(7, 4, 'white'));
-        // white.pieces.push(new Queen(7, 0, 'white'));
-        // white.pieces.push(new Pawn(4, 0, 'white'));
+        // white.pieces.push(new King(7, 3, 'white'));
+        // white.pieces.push(new Queen(5, 4, 'white'));
+        // white.pieces.push(new Knight(6, 4, 'white'));
         // white.pieces.push(new Pawn(5, 5, 'white'));
         // white.pieces.push(new Pawn(3, 6, 'white'));
         // white.pieces.push(new Pawn(4, 3, 'white'));
         // white.pieces.push(new Knight(6, 2, 'white'));
 
         // black.pieces.push(new King(0, 4, 'black'));
-        // black.pieces.push(new Pawn(1, 4, 'black'));
-        // black.pieces.push(new Bishop(1, 3, 'black'));
+        // black.pieces.push(new Bishop(1, 4, 'black'));
+        // black.pieces.push(new Bishop(4, 4, 'black'));
         // black.pieces.push(new Knight(0, 3, 'black'));
         // black.pieces.push(new Rook(2, 5, 'black'));
         // black.pieces.push(new Pawn(3, 4, 'black'));
@@ -192,17 +192,17 @@ class Game
             playerPieces.forEach(piece => {
                 if(piece.name !== 'KING') {
                     // each piece will search for the king
-                    const {isFound, direction} = piece.find(player.getKing());
+                    const {isFound, direction} = piece.find(player.getKing(), playerPieces);
+                    console.log(piece.name, isFound, direction);
                     // if found, check enemy piece on the opposite direction for bishop, rook or queen
                     if(isFound) {
                         // get enemy pieces
-                        const enemyPieces = this.getAllGamePiecesOnBoard().filter(piece => {
-                            return piece.team !== player.team;
-                        });
-
-                        const {movesTowardsEnemy, enemy} = player.getPieceInOppositeDirection(direction, piece, enemyPieces);
+                        const allPieces = this.getAllGamePiecesOnBoard();
+                        const result = player.getPieceInOppositeDirection(direction, piece, allPieces);
+                        console.log(result);
+                        const {isEnemy, movesTowardsEnemy, enemy} = result;
                         
-                        if(movesTowardsEnemy) {
+                        if(isEnemy) {
                             // updates the move set allowing only moves towards enemy
                             piece.allowMoveSet(movesTowardsEnemy);
                         }

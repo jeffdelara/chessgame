@@ -68,7 +68,23 @@ class Piece
         return false;
     }
 
-    find(king)
+    // Checks if I have a piece on this square (row, col)
+    // returns false if none and if enemy
+    // returns true if its my piece that is blocking towards 
+    // search for my King
+    isMyPieceBlocking(row, col, myPieces)
+    {
+        // if enemy piece is blocking and not KING
+        if(row === this.row && col === this.col) return false;
+        for(const piece of myPieces)
+        {
+            if(piece.row === row && piece.col === col) return true;
+        }
+        return false;
+    }
+
+    // Searching for my King
+    find(king, myPieces)
     {
         let isFound = false;
         let direction = null;
@@ -84,6 +100,7 @@ class Piece
                 direction = 'left';
                 return {isFound, direction};
             }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
             scannedCol--;
         }
 
@@ -97,6 +114,7 @@ class Piece
                 direction = 'right';
                 return {isFound, direction};
             }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
             scannedCol++;
         }
 
@@ -110,6 +128,7 @@ class Piece
                 direction = 'up';
                 return {isFound, direction};
             }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
             scannedRow--;
         }
 
@@ -123,6 +142,7 @@ class Piece
                 direction = 'down';
                 return {isFound, direction};
             }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
             scannedRow++;
         }
 
@@ -137,6 +157,7 @@ class Piece
                 direction = 'up-left';
                 return {isFound, direction};
             }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
             scannedRow--;
             scannedCol--;
         }
@@ -152,7 +173,40 @@ class Piece
                 direction = 'up-right';
                 return {isFound, direction};
             }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
             scannedRow--;
+            scannedCol++;
+        }
+
+        // down left
+        scannedRow = this.row;
+        scannedCol = this.col; 
+        while (scannedRow <= 7 && scannedCol >= 0) 
+        {
+            if(scannedRow === king.row && scannedCol === king.col) 
+            {
+                isFound = true;
+                direction = 'down-left';
+                return {isFound, direction};
+            }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
+            scannedRow++;
+            scannedCol--;
+        }
+
+        // down right
+        scannedRow = this.row;
+        scannedCol = this.col; 
+        while (scannedRow <= 7 && scannedCol <= 7) 
+        {
+            if(scannedRow === king.row && scannedCol === king.col) 
+            {
+                isFound = true;
+                direction = 'down-right';
+                return {isFound, direction};
+            }
+            if(this.isMyPieceBlocking(scannedRow, scannedCol, myPieces)) break;
+            scannedRow++;
             scannedCol++;
         }
 
@@ -165,7 +219,7 @@ class Piece
             const [allowedRow, allowedCol] = allowedMove;
             if(row === allowedRow && col === allowedCol) 
             {
-                console.log(row, col, allowedMove);
+                // console.log(row, col, allowedMove);
                 return true;
             }
         }
@@ -183,7 +237,7 @@ class Piece
                 newMoves.push(move);
             }
         });
-        console.log(newMoves);
+        // console.log(newMoves);
         this.move_set = newMoves;
     }
 }
