@@ -547,7 +547,7 @@ class Player
         return isSameTeam && isStillAlive;
     }
 
-    getPieceInOppositeDirection(direction, playerPiece, enemyPieces)
+    getPieceInOppositeDirection(direction, playerPiece, allPieces)
     {
         const adjust = {row: 0, col: 0};
         let playerRow = playerPiece.row;
@@ -593,36 +593,54 @@ class Player
                 break;
         }
 
+        playerRow += (adjust.row * -1);
+        playerCol += (adjust.col * -1);
+
         let pieceFound = false;
         const movesTowardsEnemy = [];
+        
         while (playerRow >= 0 && playerRow <= 7 && playerCol >= 0 && playerCol <= 7 && pieceFound === false) 
         {    
-            enemyPieces.forEach(enemyPiece => {
-
-                // Queen and Rook
-                if((enemyPiece.name === 'QUEEN' || enemyPiece.name === 'ROOK') && 
-                   (direction === 'up' || direction === 'down' || direction === 'left' || direction === 'right')) 
+            allPieces.forEach(piece => {
+                // If the piece is an ally
+                if(piece.team === this.team)
                 {
-                    movesTowardsEnemy.push([playerRow, playerCol]);
-                    if(enemyPiece.row === playerRow && enemyPiece.col === playerCol) 
+                    if(piece.row === playerRow && piece.col === playerCol) 
                     {
-                        pieceFound = {movesTowardsEnemy: movesTowardsEnemy, enemyPiece: enemyPiece};
+                        // Not an enemy, we are safe.
+                        pieceFound = {isEnemy: false, movesTowardsEnemy: null, enemyPiece: null};
                     }
                 }
 
-                // Bishop and Queen
-                if((enemyPiece.name === 'QUEEN' || enemyPiece.name === 'BISHOP') && 
-                   (direction === 'up-left' || direction === 'up-right' || direction === 'down-left' || direction === 'down-right')) 
+                // If the opposite of My King is an Enemy
+                if(piece.team !== this.team)
                 {
-                    movesTowardsEnemy.push([playerRow, playerCol]);
-                    if(enemyPiece.row === playerRow && enemyPiece.col === playerCol) 
+                    const enemyPiece = piece;
+                    // Is it Queen or Rook
+                    // if so, get the squares towards the enemy
+                    if((enemyPiece.name === 'QUEEN' || enemyPiece.name === 'ROOK') && 
+                    (direction === 'up' || direction === 'down' || direction === 'left' || direction === 'right')) 
                     {
-                        // console.log('FOUND');
-                        // console.log(`${playerPiece.name} is looking at ${enemyPiece.name} on coor ${playerRow}, ${playerCol}`);
-                        // console.log(`Enemy coor: ${enemyPiece.row}, ${enemyPiece.col}`);
-                        pieceFound = {movesTowardsEnemy: movesTowardsEnemy, enemyPiece: enemyPiece};
+                        movesTowardsEnemy.push([playerRow, playerCol]);
+                        if(enemyPiece.row === playerRow && enemyPiece.col === playerCol) 
+                        {
+                            pieceFound = {isEnemy: true, movesTowardsEnemy: movesTowardsEnemy, enemyPiece: enemyPiece};
+                        }
+                    }
+
+                    // Or a Bishop or Queen
+                    // if so, get the squares towards the enemy
+                    if((enemyPiece.name === 'QUEEN' || enemyPiece.name === 'BISHOP') && 
+                        (direction === 'up-left' || direction === 'up-right' || direction === 'down-left' || direction === 'down-right')) 
+                    {
+                        movesTowardsEnemy.push([playerRow, playerCol]);
+                        if(enemyPiece.row === playerRow && enemyPiece.col === playerCol) 
+                        {
+                            pieceFound = {isEnemy: true, movesTowardsEnemy: movesTowardsEnemy, enemyPiece: enemyPiece};
+                        }
                     }
                 }
+
             });
 
             playerRow += (adjust.row * -1);
